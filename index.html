@@ -701,11 +701,6 @@
                 <p class="section-subtitle">
                     Esplora i nostri progetti più significativi e lasciati ispirare
                 </p>
-                
-                <div class="portfolio-grid" id="portfolio-grid">
-                    <!-- Portfolio caricato dinamicamente -->
-                </div>
-                
                 <div class="text-center mt-8">
                     <a href="lavori.html" class="btn-primary inline-flex items-center">
                         <i class="fas fa-eye mr-2"></i>
@@ -921,29 +916,30 @@
             initializeHomepage();
         });
 
-        async function initializeHomepage() {
-            console.log('🚀 Initializing homepage...');
-            
-            // Aspetta che la configurazione sia caricata
-            await waitForConfig();
-            
-            // Inizializza Supabase
-            if (window.CONFIG && window.CONFIG.SUPABASE) {
-                supabaseClient = supabase.createClient(window.CONFIG.SUPABASE.url, window.CONFIG.SUPABASE.anonKey);
-                console.log('✅ Supabase connected');
-            } else {
-                console.error('❌ Config not found');
-                return;
-            }
+       async function initializeHomepage() {
+    console.log('🚀 Initializing homepage...');
+    
+    // Aspetta che la configurazione sia caricata
+    await waitForConfig();
+    
+    // Inizializza Supabase
+    if (window.CONFIG && window.CONFIG.SUPABASE) {
+        supabaseClient = supabase.createClient(window.CONFIG.SUPABASE.url, window.CONFIG.SUPABASE.anonKey);
+        console.log('✅ Supabase connected');
+    } else {
+        console.error('❌ Config not found');
+        return;
+    }
 
-            // Carica portfolio per la home
-            await loadPortfolioHome();
-            
-            // Setup form contatti
-            setupContactForm();
-            
-            console.log('✅ Homepage initialized');
-        }
+    // ❌ COMMENTA O RIMUOVI QUESTA LINEA
+    // await loadPortfolioHome();
+    
+    // Setup form contatti
+    setupContactForm();
+    
+    console.log('✅ Homepage initialized');
+}
+
 
         function waitForConfig() {
             return new Promise((resolve) => {
@@ -958,29 +954,7 @@
             });
         }
 
-        async function loadPortfolioHome() {
-            if (!supabaseClient) return;
-            
-            try {
-                console.log('🔄 Loading portfolio for home...');
-                
-                const { data, error } = await supabaseClient
-                    .from('projects')
-                    .select(`
-                        *,
-                        categories(name, slug),
-                        project_images(*)
-                    `)
-                    .eq('status', 'published')
-                    .order('created_at', { ascending: false })
-                    .limit(4);
-                
-                if (error) {
-                    console.error('❌ Error loading portfolio:', error);
-                    return;
-                }
-                
-                console.log('✅ Portfolio loaded:', data.length, 'projects');
+      
                 
                 const portfolioGrid = document.getElementById('portfolio-grid');
                 
@@ -1030,16 +1004,7 @@
                     `;
                 }).join('');
                 
-            } catch (error) {
-                console.error('❌ Error loading portfolio:', error);
-                const portfolioGrid = document.getElementById('portfolio-grid');
-                portfolioGrid.innerHTML = `
-                    <div class="col-span-full text-center py-8">
-                        <p class="text-red-500">Errore nel caricamento dei progetti.</p>
-                    </div>
-                `;
-            }
-        }
+        
 
         function setupContactForm() {
             const contactForm = document.getElementById('contact-form');
