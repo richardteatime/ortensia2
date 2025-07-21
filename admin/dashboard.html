@@ -1,0 +1,1094 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Completa - Ortensia Group</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        .drag-drop-area {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .drag-drop-area:hover {
+            border-color: #3b82f6;
+            background-color: #f3f4f6;
+        }
+        .drag-drop-area.dragover {
+            border-color: #10b981;
+            background-color: #ecfdf5;
+        }
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        .notification.success { background-color: #10b981; }
+        .notification.error { background-color: #ef4444; }
+        .notification.info { background-color: #3b82f6; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .tab-button.active {
+            border-color: #10b981;
+            color: #10b981;
+        }
+        .list-item {
+            transition: all 0.3s ease;
+        }
+        .list-item:hover {
+            background-color: #f9fafb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-6">
+                    <div class="flex items-center">
+                        <i class="fas fa-leaf text-green-600 text-2xl mr-3"></i>
+                        <h1 class="text-2xl font-bold text-gray-900">Dashboard Ortensia Group</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-sm text-gray-500">
+                            <i class="fas fa-clock mr-1"></i>
+                            <span id="current-time"></span>
+                        </div>
+                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user text-white text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-newspaper text-blue-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Articoli</p>
+                            <p class="text-2xl font-bold text-gray-900" id="articles-count">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-hammer text-green-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Progetti</p>
+                            <p class="text-2xl font-bold text-gray-900" id="projects-count">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-envelope text-purple-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Contatti</p>
+                            <p class="text-2xl font-bold text-gray-900" id="contacts-count">0</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-eye text-orange-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Visite</p>
+                            <p class="text-2xl font-bold text-gray-900">1,234</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="mb-8">
+                <nav class="flex space-x-8">
+                    <button onclick="showTab('articles')" id="tab-articles" class="tab-button active py-2 px-1 border-b-2 font-medium text-sm">
+                        <i class="fas fa-newspaper mr-2"></i>Gestione Articoli
+                    </button>
+                    <button onclick="showTab('projects')" id="tab-projects" class="tab-button py-2 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-hammer mr-2"></i>Gestione Progetti
+                    </button>
+                    <button onclick="showTab('contacts')" id="tab-contacts" class="tab-button py-2 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-envelope mr-2"></i>Messaggi
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Articles Tab -->
+            <div id="articles-tab" class="tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Article Form -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold">Gestione Articoli</h2>
+                            <button onclick="resetArticleForm()" class="text-sm text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-plus mr-1"></i>Nuovo Articolo
+                            </button>
+                        </div>
+                        
+                        <form id="article-form" class="space-y-4">
+                            <input type="hidden" id="article-id">
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Titolo *</label>
+                                <input type="text" id="article-title" name="title" required 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                                <select id="article-category" name="category" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                                    <option value="">Seleziona categoria...</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Contenuto *</label>
+                                <textarea id="article-content" name="content" rows="4" required
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                                          placeholder="Scrivi il contenuto dell'articolo..."></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Riassunto</label>
+                                <textarea id="article-excerpt" name="excerpt" rows="2"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                                          placeholder="Breve descrizione dell'articolo..."></textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Immagine Featured</label>
+                                <div class="drag-drop-area" onclick="document.getElementById('article-image').click()">
+                                    <input type="file" id="article-image" accept="image/*" style="display: none;">
+                                    <input type="hidden" id="article-image-url" name="featured_image">
+                                    <div id="article-image-preview">
+                                        <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                                        <p class="text-sm text-gray-500">Clicca per selezionare un'immagine</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end space-x-4">
+                                <button type="button" onclick="resetArticleForm()" 
+                                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                                    Reset
+                                </button>
+                                <button type="submit" 
+                                        class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                    <i class="fas fa-save mr-2"></i>Salva Articolo
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Articles List -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-bold mb-4">Articoli Esistenti</h3>
+                        <div id="articles-list" class="space-y-2 max-h-96 overflow-y-auto">
+                            <p class="text-gray-500 text-center py-4">Caricamento articoli...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Tab -->
+            <div id="projects-tab" class="tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Project Form -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold">Gestione Progetti</h2>
+                            <button onclick="resetProjectForm()" class="text-sm text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-plus mr-1"></i>Nuovo Progetto
+                            </button>
+                        </div>
+                        
+                        <form id="project-form" class="space-y-4">
+                            <input type="hidden" id="project-id">
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Titolo Progetto *</label>
+                                <input type="text" id="project-title" name="title" required 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                                <select id="project-category" name="category" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500">
+                                    <option value="">Seleziona categoria...</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Descrizione *</label>
+                                <textarea id="project-description" name="description" rows="3" required
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                                          placeholder="Descrivi il progetto realizzato..."></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Luogo</label>
+                                    <input type="text" id="project-location" name="location" 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                                           placeholder="es. Milano, Via Roma 15">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Cliente</label>
+                                    <input type="text" id="project-client" name="client" 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500"
+                                           placeholder="es. Famiglia Rossi">
+                                </div>
+                            </div>
+
+                            <!-- Immagini Prima/Durante/Dopo -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Immagine PRIMA</label>
+                                    <div class="drag-drop-area" onclick="document.getElementById('project-before').click()">
+                                        <input type="file" id="project-before" accept="image/*" style="display: none;">
+                                        <input type="hidden" id="project-before-url" name="before_image">
+                                        <div id="project-before-preview">
+                                            <i class="fas fa-image text-2xl text-gray-400 mb-1"></i>
+                                            <p class="text-xs text-gray-500">PRIMA</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Immagine DURANTE</label>
+                                    <div class="drag-drop-area" onclick="document.getElementById('project-during').click()">
+                                        <input type="file" id="project-during" accept="image/*" style="display: none;">
+                                        <input type="hidden" id="project-during-url" name="during_image">
+                                        <div id="project-during-preview">
+                                            <i class="fas fa-image text-2xl text-gray-400 mb-1"></i>
+                                            <p class="text-xs text-gray-500">DURANTE</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Immagine DOPO</label>
+                                    <div class="drag-drop-area" onclick="document.getElementById('project-after').click()">
+                                        <input type="file" id="project-after" accept="image/*" style="display: none;">
+                                        <input type="hidden" id="project-after-url" name="after_image">
+                                        <div id="project-after-preview">
+                                            <i class="fas fa-image text-2xl text-gray-400 mb-1"></i>
+                                            <p class="text-xs text-gray-500">DOPO</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end space-x-4">
+                                <button type="button" onclick="resetProjectForm()" 
+                                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                                    Reset
+                                </button>
+                                <button type="submit" 
+                                        class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                                    <i class="fas fa-save mr-2"></i>Salva Progetto
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Projects List -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="text-lg font-bold mb-4">Progetti Esistenti</h3>
+                        <div id="projects-list" class="space-y-2 max-h-96 overflow-y-auto">
+                            <p class="text-gray-500 text-center py-4">Caricamento progetti...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contacts Tab -->
+            <div id="contacts-tab" class="tab-content hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-bold mb-6">Messaggi Ricevuti</h2>
+                    <div id="contacts-list" class="space-y-4">
+                        <p class="text-gray-500 text-center py-4">Caricamento contatti...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal per conferma eliminazione -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="text-lg font-bold mb-4">Conferma Eliminazione</h3>
+            <p class="text-gray-600 mb-6">Sei sicuro di voler eliminare questo elemento? Questa azione non può essere annullata.</p>
+            <div class="flex justify-end space-x-4">
+                <button onclick="closeDeleteModal()" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    Annulla
+                </button>
+                <button onclick="confirmDelete()" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                    Elimina
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/scripts.js"></script>
+
+    <script>
+        // Variabili globali
+        let supabaseClient = null;
+        let uploadedImages = {};
+        let currentEditingId = null;
+        let currentEditingType = null;
+        let deleteCallback = null;
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            updateTime();
+            setInterval(updateTime, 60000); // Aggiorna ogni minuto
+        });
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('it-IT', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        async function initializeDashboard() {
+            console.log('🚀 Initializing dashboard...');
+            
+            // Aspetta che la configurazione sia caricata
+            await waitForConfig();
+            
+            // Inizializza Supabase
+            if (window.CONFIG && window.CONFIG.SUPABASE) {
+                supabaseClient = supabase.createClient(window.CONFIG.SUPABASE.url, window.CONFIG.SUPABASE.anonKey);
+                console.log('✅ Supabase connected');
+            } else {
+                console.error('❌ Config not found');
+                return;
+            }
+
+            // Carica dati iniziali
+            await loadInitialData();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            console.log('✅ Dashboard initialized');
+        }
+
+        function waitForConfig() {
+            return new Promise((resolve) => {
+                const checkConfig = () => {
+                    if (window.CONFIG) {
+                        resolve();
+                    } else {
+                        setTimeout(checkConfig, 100);
+                    }
+                };
+                checkConfig();
+            });
+        }
+
+        async function loadInitialData() {
+            try {
+                // Carica categorie
+                await loadCategories();
+                
+                // Carica statistiche
+                await loadStats();
+                
+                // Carica liste
+                await loadArticlesList();
+                await loadProjectsList();
+                await loadContacts();
+                
+                console.log('✅ Initial data loaded');
+            } catch (error) {
+                console.error('❌ Error loading initial data:', error);
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('categories')
+                    .select('*')
+                    .order('name');
+                
+                if (error) throw error;
+                
+                const blogCategories = data.filter(cat => cat.type === 'blog');
+                const projectCategories = data.filter(cat => cat.type === 'project');
+                
+                // Popola dropdown articoli
+                const articleSelect = document.getElementById('article-category');
+                articleSelect.innerHTML = '<option value="">Seleziona categoria...</option>';
+                blogCategories.forEach(cat => {
+                    articleSelect.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                });
+                
+                // Popola dropdown progetti
+                const projectSelect = document.getElementById('project-category');
+                projectSelect.innerHTML = '<option value="">Seleziona categoria...</option>';
+                projectCategories.forEach(cat => {
+                    projectSelect.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                });
+                
+                console.log('✅ Categories loaded');
+            } catch (error) {
+                console.error('❌ Error loading categories:', error);
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const [articlesResult, projectsResult, contactsResult] = await Promise.all([
+                    supabaseClient.from('articles').select('*', { count: 'exact', head: true }),
+                    supabaseClient.from('projects').select('*', { count: 'exact', head: true }),
+                    supabaseClient.from('contacts').select('*', { count: 'exact', head: true })
+                ]);
+                
+                document.getElementById('articles-count').textContent = articlesResult.count || 0;
+                document.getElementById('projects-count').textContent = projectsResult.count || 0;
+                document.getElementById('contacts-count').textContent = contactsResult.count || 0;
+                
+                console.log('✅ Stats loaded');
+            } catch (error) {
+                console.error('❌ Error loading stats:', error);
+            }
+        }
+
+        function setupEventListeners() {
+            // Form articoli
+            document.getElementById('article-form').addEventListener('submit', handleArticleSubmit);
+            document.getElementById('article-image').addEventListener('change', (e) => handleImageUpload(e, 'article'));
+            
+            // Form progetti
+            document.getElementById('project-form').addEventListener('submit', handleProjectSubmit);
+            document.getElementById('project-before').addEventListener('change', (e) => handleImageUpload(e, 'project-before'));
+            document.getElementById('project-during').addEventListener('change', (e) => handleImageUpload(e, 'project-during'));
+            document.getElementById('project-after').addEventListener('change', (e) => handleImageUpload(e, 'project-after'));
+        }
+
+        async function handleArticleSubmit(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const isEditing = document.getElementById('article-id').value;
+            
+            // Mostra loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Salvando...';
+            
+            try {
+                const title = formData.get('title');
+                const content = formData.get('content');
+                const excerpt = formData.get('excerpt');
+                const featuredImage = formData.get('featured_image');
+                
+                // Validazione lunghezza campi
+                if (title.length > 250) {
+                    throw new Error('Titolo troppo lungo (max 250 caratteri)');
+                }
+                
+                if (excerpt && excerpt.length > 500) {
+                    throw new Error('Riassunto troppo lungo (max 500 caratteri)');
+                }
+                
+                const articleData = {
+                    title: title,
+                    slug: generateSlug(title),
+                    content: content,
+                    excerpt: excerpt || null,
+                    featured_image: featuredImage || null,
+                    category_id: formData.get('category') || null,
+                    status: 'published',
+                    seo_title: title,
+                    seo_description: excerpt || title,
+                    published_at: new Date().toISOString()
+                };
+                
+                let result;
+                if (isEditing) {
+                    result = await window.OrtensiaAPI.updateArticle(isEditing, articleData);
+                } else {
+                    result = await window.OrtensiaAPI.createArticle(articleData);
+                }
+                
+                if (result.success) {
+                    showNotification(isEditing ? 'Articolo aggiornato con successo!' : 'Articolo creato con successo!', 'success');
+                    resetArticleForm();
+                    await loadArticlesList();
+                    await loadStats();
+                } else {
+                    throw new Error(result.error);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error saving article:', error);
+                showNotification('Errore: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Salva Articolo';
+            }
+        }
+
+        async function handleProjectSubmit(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const isEditing = document.getElementById('project-id').value;
+            
+            // Mostra loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Salvando...';
+            
+            try {
+                const title = formData.get('title');
+                const description = formData.get('description');
+                const location = formData.get('location');
+                const client = formData.get('client');
+                
+                // Validazione lunghezza campi
+                if (title.length > 250) {
+                    throw new Error('Titolo troppo lungo (max 250 caratteri)');
+                }
+                
+                if (location && location.length > 250) {
+                    throw new Error('Luogo troppo lungo (max 250 caratteri)');
+                }
+                
+                if (client && client.length > 250) {
+                    throw new Error('Nome cliente troppo lungo (max 250 caratteri)');
+                }
+                
+                // Determina l'immagine featured (priorità: dopo > durante > prima)
+                let featuredImage = null;
+                if (formData.get('after_image')) {
+                    featuredImage = formData.get('after_image');
+                } else if (formData.get('during_image')) {
+                    featuredImage = formData.get('during_image');
+                } else if (formData.get('before_image')) {
+                    featuredImage = formData.get('before_image');
+                }
+                
+                const projectData = {
+                    title: title,
+                    slug: generateSlug(title),
+                    description: description,
+                    location: location || null,
+                    client_name: client || null,
+                    category_id: formData.get('category') || null,
+                    featured_image: featuredImage,
+                    status: 'published',
+                    completion_date: null
+                };
+                
+                let result;
+                let projectId;
+                
+                if (isEditing) {
+                    result = await window.OrtensiaAPI.updateProject(isEditing, projectData);
+                    projectId = isEditing;
+                } else {
+                    result = await window.OrtensiaAPI.createProject(projectData);
+                    projectId = result.data?.id;
+                }
+                
+                if (result.success) {
+                    // Gestisci le immagini solo se non stiamo editando o se le immagini sono cambiate
+                    if (!isEditing) {
+                        const images = [];
+                        if (formData.get('before_image')) {
+                            images.push({
+                                project_id: projectId,
+                                image_url: formData.get('before_image'),
+                                type: 'before',
+                                alt_text: `${title} - Prima`,
+                                order_number: 1
+                            });
+                        }
+                        if (formData.get('during_image')) {
+                            images.push({
+                                project_id: projectId,
+                                image_url: formData.get('during_image'),
+                                type: 'during',
+                                alt_text: `${title} - Durante`,
+                                order_number: 2
+                            });
+                        }
+                        if (formData.get('after_image')) {
+                            images.push({
+                                project_id: projectId,
+                                image_url: formData.get('after_image'),
+                                type: 'after',
+                                alt_text: `${title} - Dopo`,
+                                order_number: 3
+                            });
+                        }
+                        
+                        if (images.length > 0) {
+                            const { error: imgError } = await supabaseClient
+                                .from('project_images')
+                                .insert(images);
+                            
+                            if (imgError) throw imgError;
+                        }
+                    }
+                    
+                    showNotification(isEditing ? 'Progetto aggiornato con successo!' : 'Progetto creato con successo!', 'success');
+                    resetProjectForm();
+                    await loadProjectsList();
+                    await loadStats();
+                } else {
+                    throw new Error(result.error);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error saving project:', error);
+                showNotification('Errore: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Salva Progetto';
+            }
+        }
+
+        function handleImageUpload(e, type) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Validazione
+            if (!file.type.startsWith('image/')) {
+                showNotification('Seleziona un file immagine valido', 'error');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('File troppo grande (max 5MB)', 'error');
+                return;
+            }
+            
+            // Crea URL temporaneo per anteprima
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                
+                // Comprimi l'immagine
+                window.OrtensiaAPI.compressImageDataURL(imageUrl, 1200, 0.8).then(compressedUrl => {
+                    // Salva URL compresso
+                    uploadedImages[type] = compressedUrl;
+                    
+                    // Mostra anteprima
+                    showImagePreview(type, compressedUrl);
+                    
+                    // Salva nel campo hidden
+                    if (type === 'article') {
+                        document.getElementById('article-image-url').value = compressedUrl;
+                    } else if (type === 'project-before') {
+                        document.getElementById('project-before-url').value = compressedUrl;
+                    } else if (type === 'project-during') {
+                        document.getElementById('project-during-url').value = compressedUrl;
+                    } else if (type === 'project-after') {
+                        document.getElementById('project-after-url').value = compressedUrl;
+                    }
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showImagePreview(type, imageUrl) {
+            const previewId = type === 'article' ? 'article-image-preview' : `${type}-preview`;
+            const previewDiv = document.getElementById(previewId);
+            
+            previewDiv.innerHTML = `
+                <img src="${imageUrl}" alt="Preview" class="image-preview">
+                <p class="text-xs text-green-600 mt-1">✅ Caricata</p>
+            `;
+        }
+
+        async function loadArticlesList() {
+            try {
+                const articles = await window.OrtensiaAPI.loadAllArticles();
+                const listDiv = document.getElementById('articles-list');
+                
+                if (articles.length === 0) {
+                    listDiv.innerHTML = '<p class="text-gray-500 text-center py-4">Nessun articolo trovato</p>';
+                    return;
+                }
+                
+                listDiv.innerHTML = articles.map(article => `
+                    <div class="list-item p-3 border rounded-lg flex justify-between items-start">
+                        <div class="flex-1">
+                            <h4 class="font-medium text-sm">${article.title}</h4>
+                            <p class="text-xs text-gray-500 mt-1">${article.categories?.name || 'Senza categoria'}</p>
+                            <p class="text-xs text-gray-400">${formatDate(article.created_at)}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="editArticle('${article.id}')" class="text-blue-500 hover:text-blue-700">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteArticle('${article.id}')" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('❌ Error loading articles:', error);
+            }
+        }
+
+        async function loadProjectsList() {
+            try {
+                const projects = await window.OrtensiaAPI.loadAllProjects();
+                const listDiv = document.getElementById('projects-list');
+                
+                if (projects.length === 0) {
+                    listDiv.innerHTML = '<p class="text-gray-500 text-center py-4">Nessun progetto trovato</p>';
+                    return;
+                }
+                
+                listDiv.innerHTML = projects.map(project => `
+                    <div class="list-item p-3 border rounded-lg flex justify-between items-start">
+                        <div class="flex-1">
+                            <h4 class="font-medium text-sm">${project.title}</h4>
+                            <p class="text-xs text-gray-500 mt-1">${project.categories?.name || 'Senza categoria'}</p>
+                            <p class="text-xs text-gray-400">${project.location || 'Luogo non specificato'}</p>
+                            <p class="text-xs text-gray-400">${formatDate(project.created_at)}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="editProject('${project.id}')" class="text-blue-500 hover:text-blue-700">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteProject('${project.id}')" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('❌ Error loading projects:', error);
+            }
+        }
+
+        async function loadContacts() {
+            try {
+                const contacts = await window.OrtensiaAPI.loadContacts();
+                const listDiv = document.getElementById('contacts-list');
+                
+                if (contacts.length === 0) {
+                    listDiv.innerHTML = '<p class="text-gray-500 text-center py-4">Nessun messaggio ricevuto</p>';
+                    return;
+                }
+                
+                listDiv.innerHTML = contacts.map(contact => `
+                    <div class="border rounded-lg p-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 class="font-medium">${contact.name}</h4>
+                                <p class="text-sm text-gray-600">${contact.email}</p>
+                                ${contact.phone ? `<p class="text-sm text-gray-600">${contact.phone}</p>` : ''}
+                            </div>
+                            <span class="text-xs text-gray-500">${formatDate(contact.created_at)}</span>
+                        </div>
+                        <p class="text-sm font-medium mb-2">${contact.subject || 'Nessun oggetto'}</p>
+                        <p class="text-sm text-gray-700">${contact.message}</p>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('❌ Error loading contacts:', error);
+            }
+        }
+
+        async function editArticle(id) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('articles')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+                
+                if (error) throw error;
+                
+                // Popola il form
+                document.getElementById('article-id').value = data.id;
+                document.getElementById('article-title').value = data.title;
+                document.getElementById('article-content').value = data.content;
+                document.getElementById('article-excerpt').value = data.excerpt || '';
+                document.getElementById('article-category').value = data.category_id || '';
+                document.getElementById('article-image-url').value = data.featured_image || '';
+                
+                if (data.featured_image) {
+                    showImagePreview('article', data.featured_image);
+                }
+                
+                // Mostra il tab articoli
+                showTab('articles');
+                
+                showNotification('Articolo caricato per la modifica', 'info');
+                
+            } catch (error) {
+                console.error('❌ Error editing article:', error);
+                showNotification('Errore caricamento articolo', 'error');
+            }
+        }
+
+        async function editProject(id) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('projects')
+                    .select(`
+                        *,
+                        project_images(*)
+                    `)
+                    .eq('id', id)
+                    .single();
+                
+                if (error) throw error;
+                
+                // Popola il form
+                document.getElementById('project-id').value = data.id;
+                document.getElementById('project-title').value = data.title;
+                document.getElementById('project-description').value = data.description;
+                document.getElementById('project-location').value = data.location || '';
+                document.getElementById('project-client').value = data.client_name || '';
+                document.getElementById('project-category').value = data.category_id || '';
+                
+                // Popola le immagini
+                if (data.project_images) {
+                    data.project_images.forEach(img => {
+                        const fieldId = `project-${img.type}-url`;
+                        document.getElementById(fieldId).value = img.image_url;
+                        showImagePreview(`project-${img.type}`, img.image_url);
+                    });
+                }
+                
+                // Mostra il tab progetti
+                showTab('projects');
+                
+                showNotification('Progetto caricato per la modifica', 'info');
+                
+            } catch (error) {
+                console.error('❌ Error editing project:', error);
+                showNotification('Errore caricamento progetto', 'error');
+            }
+        }
+
+        function deleteArticle(id) {
+            currentEditingId = id;
+            currentEditingType = 'article';
+            deleteCallback = async () => {
+                const result = await window.OrtensiaAPI.deleteArticle(id);
+                if (result.success) {
+                    showNotification('Articolo eliminato con successo', 'success');
+                    await loadArticlesList();
+                    await loadStats();
+                } else {
+                    showNotification('Errore eliminazione articolo', 'error');
+                }
+            };
+            document.getElementById('delete-modal').style.display = 'block';
+        }
+
+        function deleteProject(id) {
+            currentEditingId = id;
+            currentEditingType = 'project';
+            deleteCallback = async () => {
+                const result = await window.OrtensiaAPI.deleteProject(id);
+                if (result.success) {
+                    showNotification('Progetto eliminato con successo', 'success');
+                    await loadProjectsList();
+                    await loadStats();
+                } else {
+                    showNotification('Errore eliminazione progetto', 'error');
+                }
+            };
+            document.getElementById('delete-modal').style.display = 'block';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('delete-modal').style.display = 'none';
+            currentEditingId = null;
+            currentEditingType = null;
+            deleteCallback = null;
+        }
+
+        async function confirmDelete() {
+            if (deleteCallback) {
+                await deleteCallback();
+            }
+            closeDeleteModal();
+        }
+
+        // Utility functions
+        function generateSlug(text) {
+            return text
+                .toString()
+                .toLowerCase()
+                .trim()
+                .replace(/[àáâãäå]/g, 'a')
+                .replace(/[èéêë]/g, 'e')
+                .replace(/[ìíîï]/g, 'i')
+                .replace(/[òóôõö]/g, 'o')
+                .replace(/[ùúûü]/g, 'u')
+                .replace(/[ç]/g, 'c')
+                .replace(/[ñ]/g, 'n')
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .substring(0, 200);
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('it-IT', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        }
+
+        function showTab(tabName) {
+            // Nascondi tutti i tab
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Mostra il tab selezionato
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            
+            // Aggiorna stile bottoni
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        function resetArticleForm() {
+            document.getElementById('article-form').reset();
+            document.getElementById('article-id').value = '';
+            document.getElementById('article-image-preview').innerHTML = `
+                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                <p class="text-sm text-gray-500">Clicca per selezionare un'immagine</p>
+            `;
+            document.getElementById('article-image-url').value = '';
+        }
+
+        function resetProjectForm() {
+            document.getElementById('project-form').reset();
+            document.getElementById('project-id').value = '';
+            
+            ['project-before-preview', 'project-during-preview', 'project-after-preview'].forEach((id, index) => {
+                const labels = ['PRIMA', 'DURANTE', 'DOPO'];
+                document.getElementById(id).innerHTML = `
+                    <i class="fas fa-image text-2xl text-gray-400 mb-1"></i>
+                    <p class="text-xs text-gray-500">${labels[index]}</p>
+                `;
+            });
+            
+            ['project-before-url', 'project-during-url', 'project-after-url'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+        }
+
+        // Event listeners per chiusura modale
+        document.getElementById('delete-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDeleteModal();
+            }
+        });
+    </script>
+</body>
+</html>

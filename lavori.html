@@ -1,0 +1,846 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Nostri Lavori - Ortensia Group</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2C5F2D;
+            --secondary-green: #4A7C59;
+            --accent-gold: #D4AF37;
+            --light-green: #E8F5E8;
+            --dark-text: #1A3A1B;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--white);
+        }
+
+        .navbar {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            text-decoration: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-nav a {
+            color: var(--dark-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav a:hover {
+            color: var(--primary-green);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+            color: var(--white);
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .filter-button {
+            background: var(--white);
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+
+        .filter-button:hover, .filter-button.active {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+
+        .project-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-green);
+        }
+
+        .project-description {
+            color: var(--secondary-green);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--secondary-green);
+        }
+
+        .project-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .project-category {
+            background: var(--light-green);
+            color: var(--primary-green);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            margin: 2% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1000px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: var(--primary-green);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: var(--accent-gold);
+        }
+
+        .before-after-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .before-after-item {
+            text-align: center;
+        }
+
+        .before-after-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .before-after-label {
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--primary-green);
+            background: var(--white);
+            color: var(--primary-green);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:hover, .pagination button.active {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--secondary-green);
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--secondary-green);
+        }
+
+        .search-bar {
+            background: var(--white);
+            border: 2px solid var(--primary-green);
+            border-radius: 50px;
+            padding: 0.75rem 1.5rem;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            font-size: 1rem;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(44, 95, 45, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .before-after-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar-nav {
+                display: none;
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="../index.html" class="navbar-brand">
+                <img src="/ortensia-logo.png" style="height: 40px;">
+
+            </a>
+            <div class="navbar-nav">
+                <a href="../index.html">Home</a>
+                <a href="../blog.html">Blog</a>
+                <a href="../lavori.html">I Nostri Lavori</a>
+                <a href="../index.html#contatti">Contatti</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container mx-auto px-4">
+            <h1 class="hero-title">I Nostri Lavori</h1>
+            <p class="hero-subtitle">Scopri i progetti realizzati con passione e professionalità</p>
+        </div>
+    </section>
+
+    <!-- Filters and Search -->
+    <section class="py-8 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-8">
+                <input type="text" id="search-bar" class="search-bar" placeholder="Cerca nei progetti...">
+            </div>
+            
+            <div class="text-center mb-8">
+                <div id="filter-buttons" class="flex flex-wrap justify-center">
+                    <button class="filter-button active" data-filter="all">Tutti</button>
+                    <!-- I filtri verranno caricati dinamicamente -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Grid -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <div id="loading" class="loading">
+                <i class="fas fa-spinner fa-spin text-2xl"></i>
+                <p class="mt-2">Caricamento progetti...</p>
+            </div>
+            
+            <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
+                <!-- I progetti verranno caricati qui -->
+            </div>
+            
+            <div id="no-results" class="no-results hidden">
+                <i class="fas fa-search text-4xl mb-4"></i>
+                <h3 class="text-xl font-semibold mb-2">Nessun progetto trovato</h3>
+                <p>Prova a modificare i filtri o la ricerca</p>
+            </div>
+            
+            <!-- Pagination -->
+            <div id="pagination" class="pagination hidden">
+                <button id="prev-btn" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div id="page-numbers"></div>
+                <button id="next-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Modal -->
+    <div id="project-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-content">
+                <!-- Il contenuto del modal verrà caricato qui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Configurazione Supabase
+        const SUPABASE_CONFIG = {
+            url: 'https://uvpntnqolpuodftjefzk.supabase.co',
+            anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2cG50bnFvbHB1b2RmdGplZnprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI0NDQ0MDMsImV4cCI6MjA2ODAyMDQwM30.27S9Po4wTjtRk_0Ixm55_g7U0xOIyK_hlErWLQehXg4'
+        };
+
+        // Inizializza Supabase
+        const supabaseClient = supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+
+        // Variabili globali
+        let allProjects = [];
+        let filteredProjects = [];
+        let currentPage = 1;
+        let projectsPerPage = 9;
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+        });
+
+        async function initializePage() {
+            try {
+                // Carica categorie per i filtri
+                await loadCategories();
+                
+                // Carica progetti
+                await loadProjects();
+                
+                // Setup event listeners
+                setupEventListeners();
+                
+                console.log('✅ Pagina inizializzata correttamente');
+            } catch (error) {
+                console.error('❌ Errore inizializzazione:', error);
+                showError('Errore durante il caricamento della pagina');
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('categories')
+                    .select('*')
+                    .eq('type', 'project')
+                    .order('name');
+                
+                if (error) throw error;
+                
+                const filterButtons = document.getElementById('filter-buttons');
+                const allButton = filterButtons.querySelector('[data-filter="all"]');
+                
+                // Mantieni il pulsante "Tutti" e aggiungi gli altri
+                data.forEach(category => {
+                    const button = document.createElement('button');
+                    button.className = 'filter-button';
+                    button.setAttribute('data-filter', category.slug);
+                    button.textContent = category.name;
+                    filterButtons.appendChild(button);
+                });
+                
+                console.log('✅ Categorie caricate');
+            } catch (error) {
+                console.error('❌ Errore caricamento categorie:', error);
+            }
+        }
+
+        async function loadProjects() {
+            try {
+                document.getElementById('loading').classList.remove('hidden');
+                document.getElementById('projects-grid').classList.add('hidden');
+                
+                const { data, error } = await supabaseClient
+                    .from('projects')
+                    .select(`
+                        *,
+                        categories(name, slug),
+                        project_images(*)
+                    `)
+                    .eq('status', 'published')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                allProjects = data || [];
+                
+                // Se non ci sono progetti, mostra alcuni di esempio
+                if (allProjects.length === 0) {
+                    allProjects = getExampleProjects();
+                }
+                
+                applyFilters();
+                
+                console.log('✅ Progetti caricati:', allProjects.length);
+            } catch (error) {
+                console.error('❌ Errore caricamento progetti:', error);
+                showError('Errore durante il caricamento dei progetti');
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+            }
+        }
+
+        function getExampleProjects() {
+            return [
+                {
+                    id: 'example-1',
+                    title: 'Giardino Residenziale Milano',
+                    description: 'Completa trasformazione di un giardino residenziale di 300 mq con design moderno e sostenibile.',
+                    location: 'Milano, Zona Brera',
+                    client_name: 'Famiglia Rossi',
+                    categories: { name: 'Giardini Privati', slug: 'giardini-privati' },
+                    featured_image: 'https://verdant-semolina-e063ba.netlify.app/images/01.jpg',
+                    project_images: [
+                        {
+                            image_url: 'https://verdant-semolina-e063ba.netlify.app/images/giardinochisiamo.jpg',
+                            type: 'before',
+                            alt_text: 'Prima dei lavori'
+                        },
+                        {
+                            image_url: 'https://verdant-semolina-e063ba.netlify.app/images/c4d175c0-015c-4d60-a5b4-ded055c4c7b4.JPG',
+                            type: 'during',
+                            alt_text: 'Durante i lavori'
+                        },
+                        {
+                            image_url: 'https://verdant-semolina-e063ba.netlify.app/images/01.jpg',
+                            type: 'after',
+                            alt_text: 'Dopo i lavori'
+                        }
+                    ],
+                    created_at: '2024-01-15T10:00:00Z'
+                },
+                {
+                    id: 'example-2',
+                    title: 'Parco Aziendale Corporate',
+                    description: 'Progettazione e realizzazione di spazio verde aziendale con zone relax e percorsi pedonali.',
+                    location: 'Milano, Zona Porta Nuova',
+                    client_name: 'TechCorp SRL',
+                    categories: { name: 'Spazi Commerciali', slug: 'spazi-commerciali' },
+                    featured_image: 'https://verdant-semolina-e063ba.netlify.app/images/b6eb6149-58c5-4d85-8085-c622bd11791f.jpg',
+                    project_images: [
+                        {
+                            image_url: 'https://verdant-semolina-e063ba.netlify.app/images/b6eb6149-58c5-4d85-8085-c622bd11791f.jpg',
+                            type: 'before',
+                            alt_text: 'Prima dei lavori'
+                        },
+                        {
+                            image_url: 'https://verdant-semolina-e063ba.netlify.app/images/giardinochisiamo.jpg',
+                            type: 'during',
+                            alt_text: 'Durante i lavori'
+                        },
+                        {
+                            image_url: 'https://verdant-semolina-e063ba.netlify.app/images/01.jpg',
+                            type: 'after',
+                            alt_text: 'Dopo i lavori'
+                        }
+                    ],
+                    created_at: '2024-02-20T14:30:00Z'
+                },
+                {
+                    id: 'example-3',
+                    title: 'Impianto Irrigazione Residenziale',
+                    description: 'Installazione di sistema di irrigazione automatizzato con sensori di umidità e programmazione intelligente.',
+                    location: 'Monza, Via Libertà',
+                    client_name: 'Famiglia Bianchi',
+                    categories: { name: 'Impianti Irrigazione', slug: 'impianti-irrigazione' },
+                    featured_image: 'https://verdant-semolina-e063ba.netlify.app/images/c4d175c0-015c-4d60-a5b4-ded055c4c7b4.JPG',
+                    project_images: [
+                        {
+                            image_url: 'https://verdant-semolina-e063ba.netlify.app/images/c4d175c0-015c-4d60-a5b4-ded055c4c7b4.JPG',
+                            type: 'before',
+                            alt_text: 'Prima dei lavori'
+                        },
+                        {
+                            image_url: 'https://verdant-semolina-e063ba.netlify.app/images/01.jpg',
+                            type: 'during',
+                            alt_text: 'Durante i lavori'
+                        },
+                        {
+                            image_url: 'https://verdant-semolina-e063ba.netlify.app/images/giardinochisiamo.jpg',
+                            type: 'after',
+                            alt_text: 'Dopo i lavori'
+                        }
+                    ],
+                    created_at: '2024-03-10T09:15:00Z'
+                }
+            ];
+        }
+
+        function setupEventListeners() {
+            // Filtri
+            document.getElementById('filter-buttons').addEventListener('click', function(e) {
+                if (e.target.classList.contains('filter-button')) {
+                    // Aggiorna stato attivo
+                    document.querySelectorAll('.filter-button').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    e.target.classList.add('active');
+                    
+                    // Applica filtro
+                    currentFilter = e.target.getAttribute('data-filter');
+                    currentPage = 1;
+                    applyFilters();
+                }
+            });
+
+            // Ricerca
+            document.getElementById('search-bar').addEventListener('input', function(e) {
+                searchQuery = e.target.value.toLowerCase();
+                currentPage = 1;
+                applyFilters();
+            });
+
+            // Paginazione
+            document.getElementById('prev-btn').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderProjects();
+                }
+            });
+
+            document.getElementById('next-btn').addEventListener('click', function() {
+                const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderProjects();
+                }
+            });
+
+            // Modal
+            document.getElementById('project-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+
+            document.querySelector('.close').addEventListener('click', closeModal);
+        }
+
+        function applyFilters() {
+            filteredProjects = allProjects.filter(project => {
+                // Filtro categoria
+                const categoryMatch = currentFilter === 'all' || 
+                    (project.categories && project.categories.slug === currentFilter);
+                
+                // Filtro ricerca
+                const searchMatch = searchQuery === '' || 
+                    project.title.toLowerCase().includes(searchQuery) ||
+                    project.description.toLowerCase().includes(searchQuery) ||
+                    (project.location && project.location.toLowerCase().includes(searchQuery));
+                
+                return categoryMatch && searchMatch;
+            });
+
+            currentPage = 1;
+            renderProjects();
+        }
+
+        function renderProjects() {
+            const projectsGrid = document.getElementById('projects-grid');
+            const noResults = document.getElementById('no-results');
+            
+            if (filteredProjects.length === 0) {
+                projectsGrid.classList.add('hidden');
+                noResults.classList.remove('hidden');
+                document.getElementById('pagination').classList.add('hidden');
+                return;
+            }
+            
+            noResults.classList.add('hidden');
+            projectsGrid.classList.remove('hidden');
+            
+            // Calcola progetti per la pagina corrente
+            const startIndex = (currentPage - 1) * projectsPerPage;
+            const endIndex = startIndex + projectsPerPage;
+            const pageProjects = filteredProjects.slice(startIndex, endIndex);
+            
+            // Renderizza progetti
+            projectsGrid.innerHTML = pageProjects.map(project => {
+                const featuredImage = project.featured_image || 
+                    (project.project_images && project.project_images.find(img => img.type === 'after')?.image_url) ||
+                    'https://verdant-semolina-e063ba.netlify.app/images/01.jpg';
+                
+                return `
+                    <div class="project-card animate-fade-in" onclick="openProjectModal('${project.id}')">
+                        <img src="${featuredImage}" alt="${project.title}" class="project-image">
+                        <div class="project-content">
+                            <h3 class="project-title">${project.title}</h3>
+                            <p class="project-description">${truncateText(project.description, 100)}</p>
+                            <div class="project-meta">
+                                <div class="project-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>${project.location || 'Ubicazione non specificata'}</span>
+                                </div>
+                                <div class="project-category">
+                                    ${project.categories?.name || 'Generale'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
+            const pagination = document.getElementById('pagination');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const pageNumbers = document.getElementById('page-numbers');
+            
+            if (totalPages <= 1) {
+                pagination.classList.add('hidden');
+                return;
+            }
+            
+            pagination.classList.remove('hidden');
+            
+            // Aggiorna bottoni prev/next
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+            
+            // Genera numeri di pagina
+            pageNumbers.innerHTML = '';
+            
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.textContent = i;
+                    pageBtn.className = i === currentPage ? 'active' : '';
+                    pageBtn.addEventListener('click', function() {
+                        currentPage = i;
+                        renderProjects();
+                    });
+                    pageNumbers.appendChild(pageBtn);
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                    const dots = document.createElement('span');
+                    dots.textContent = '...';
+                    dots.className = 'px-2 text-gray-500';
+                    pageNumbers.appendChild(dots);
+                }
+            }
+        }
+
+        function openProjectModal(projectId) {
+            const project = allProjects.find(p => p.id === projectId);
+            if (!project) return;
+            
+            const modal = document.getElementById('project-modal');
+            const modalContent = document.getElementById('modal-content');
+            
+            // Organizza immagini per tipo
+            const beforeImages = project.project_images?.filter(img => img.type === 'before') || [];
+            const duringImages = project.project_images?.filter(img => img.type === 'during') || [];
+            const afterImages = project.project_images?.filter(img => img.type === 'after') || [];
+            
+            modalContent.innerHTML = `
+                <h2 class="text-2xl font-bold mb-4 text-primary-green">${project.title}</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Dettagli Progetto</h3>
+                        <p class="text-gray-700 mb-4">${project.description}</p>
+                        
+                        <div class="space-y-2">
+                            ${project.location ? `<p><i class="fas fa-map-marker-alt text-primary-green mr-2"></i><strong>Luogo:</strong> ${project.location}</p>` : ''}
+                            ${project.client_name ? `<p><i class="fas fa-user text-primary-green mr-2"></i><strong>Cliente:</strong> ${project.client_name}</p>` : ''}
+                            ${project.categories ? `<p><i class="fas fa-tag text-primary-green mr-2"></i><strong>Categoria:</strong> ${project.categories.name}</p>` : ''}
+                            <p><i class="fas fa-calendar text-primary-green mr-2"></i><strong>Data:</strong> ${formatDate(project.created_at)}</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">Immagine Principale</h3>
+                        <img src="${project.featured_image || afterImages[0]?.image_url || 'https://verdant-semolina-e063ba.netlify.app/images/01.jpg'}" 
+                             alt="${project.title}" 
+                             class="w-full h-64 object-cover rounded-lg">
+                    </div>
+                </div>
+                
+                ${project.project_images && project.project_images.length > 0 ? `
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-4">Progressione Lavori</h3>
+                        <div class="before-after-container">
+                            <div class="before-after-item">
+                                <div class="before-after-label">PRIMA</div>
+                                <img src="${beforeImages[0]?.image_url || 'https://verdant-semolina-e063ba.netlify.app/images/giardinochisiamo.jpg'}" 
+                                     alt="Prima dei lavori">
+                            </div>
+                            <div class="before-after-item">
+                                <div class="before-after-label">DURANTE</div>
+                                <img src="${duringImages[0]?.image_url || 'https://verdant-semolina-e063ba.netlify.app/images/c4d175c0-015c-4d60-a5b4-ded055c4c7b4.JPG'}" 
+                                     alt="Durante i lavori">
+                            </div>
+                            <div class="before-after-item">
+                                <div class="before-after-label">DOPO</div>
+                                <img src="${afterImages[0]?.image_url || 'https://verdant-semolina-e063ba.netlify.app/images/01.jpg'}" 
+                                     alt="Dopo i lavori">
+                            </div>
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div class="text-center">
+                    <button onclick="closeModal()" class="bg-primary-green text-white px-6 py-2 rounded-lg hover:bg-secondary-green transition-colors">
+                        Chiudi
+                    </button>
+                </div>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('project-modal').style.display = 'none';
+        }
+
+        function truncateText(text, maxLength) {
+            if (!text) return '';
+            return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('it-IT', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function showError(message) {
+            const projectsGrid = document.getElementById('projects-grid');
+            projectsGrid.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Errore</h3>
+                    <p class="text-gray-600">${message}</p>
+                </div>
+            `;
+            projectsGrid.classList.remove('hidden');
+        }
+
+        // Gestione tasti
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

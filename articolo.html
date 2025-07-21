@@ -1,0 +1,617 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articolo - Ortensia Group</title>
+    <meta name="description" content="Articolo del blog di Ortensia Group">
+    <meta name="keywords" content="giardinaggio, ortensia group, blog, articolo">
+    <meta name="author" content="Ortensia Group">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Articolo - Ortensia Group">
+    <meta property="og:description" content="Articolo del blog di Ortensia Group">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://ortensiagroup.net/articolo.html">
+    <meta property="og:site_name" content="Ortensia Group">
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2C5F2D;
+            --secondary-green: #4A7C59;
+            --accent-gold: #D4AF37;
+            --light-green: #E8F5E8;
+            --dark-text: #1A3A1B;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--white);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+        }
+
+        .navbar {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            text-decoration: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-nav a {
+            color: var(--dark-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav a:hover {
+            color: var(--primary-green);
+        }
+
+        .article-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .article-content h1, .article-content h2, .article-content h3 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .article-content h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-top: 2rem;
+        }
+
+        .article-content h3 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 2rem 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .article-content ul, .article-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .article-content blockquote {
+            border-left: 4px solid var(--accent-gold);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: var(--secondary-green);
+        }
+
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .article-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--secondary-green);
+            font-size: 0.9rem;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .back-button:hover {
+            background: var(--secondary-green);
+            transform: translateY(-2px);
+            color: var(--white);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .loading i {
+            font-size: 3rem;
+            color: var(--primary-green);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #ef4444;
+        }
+
+        .error i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background: var(--light-green);
+            color: var(--primary-green);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .mobile-menu {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-nav {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .article-content {
+                padding: 1rem;
+            }
+            
+            .article-content h1 {
+                font-size: 2rem;
+            }
+            
+            .article-content h2 {
+                font-size: 1.5rem;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        .footer {
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-section h3 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-section a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-gold);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="navbar-brand">
+                <i class="fas fa-leaf mr-2"></i>Ortensia Group
+            </a>
+            <div class="navbar-nav">
+                <a href="index.html">Home</a>
+                <a href="blog.html">Blog</a>
+                <a href="lavori.html">I Nostri Lavori</a>
+                <a href="index.html#contatti">Contatti</a>
+            </div>
+            <div class="mobile-menu">
+                <i class="fas fa-bars text-2xl text-primary-green cursor-pointer"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Article Content -->
+    <main class="min-h-screen">
+        <div class="container mx-auto px-4 py-8">
+            <div id="loading" class="loading">
+                <i class="fas fa-spinner"></i>
+                <p class="mt-4 text-gray-600">Caricamento articolo...</p>
+            </div>
+            
+            <div id="error" class="error hidden">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2 class="text-2xl font-bold mb-4">Articolo non trovato</h2>
+                <p class="mb-4">L'articolo che stai cercando non esiste o è stato rimosso.</p>
+                <a href="blog.html" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    Torna al Blog
+                </a>
+            </div>
+            
+            <article id="article-content" class="hidden">
+                <div class="max-w-4xl mx-auto">
+                    <a href="blog.html" class="back-button">
+                        <i class="fas fa-arrow-left"></i>
+                        Torna al Blog
+                    </a>
+                    
+                    <div class="article-content">
+                        <div id="article-category" class="category-badge"></div>
+                        
+                        <h1 id="article-title"></h1>
+                        
+                        <div class="article-meta">
+                            <span>
+                                <i class="fas fa-calendar-alt"></i>
+                                <span id="article-date"></span>
+                            </span>
+                            <span>
+                                <i class="fas fa-user"></i>
+                                Ortensia Group
+                            </span>
+                            <span>
+                                <i class="fas fa-folder"></i>
+                                <span id="article-category-name"></span>
+                            </span>
+                        </div>
+                        
+                        <img id="article-featured-image" alt="" class="w-full rounded-lg shadow-lg mb-8">
+                        
+                        <div id="article-text" class="prose max-w-none"></div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="footer-section">
+                    <h3 class="text-xl font-bold mb-4">
+                        <i class="fas fa-leaf mr-2"></i>Ortensia Group
+                    </h3>
+                    <p class="text-white mb-4">
+                        Da oltre 25 anni trasformiamo i sogni in realtà, creando spazi verdi unici e sostenibili.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-2xl hover:text-accent-gold transition-colors">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="text-2xl hover:text-accent-gold transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-2xl hover:text-accent-gold transition-colors">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Servizi</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html#servizi">Progettazione Giardini</a></li>
+                        <li><a href="index.html#servizi">Impianti Irrigazione</a></li>
+                        <li><a href="index.html#servizi">Potatura</a></li>
+                        <li><a href="index.html#servizi">Disboscamento</a></li>
+                        <li><a href="index.html#servizi">Sanificazione</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Azienda</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html#chi-siamo">Chi Siamo</a></li>
+                        <li><a href="lavori.html">I Nostri Lavori</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="index.html#contatti">Contatti</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contatti</h3>
+                    <div class="space-y-2">
+                        <p><i class="fas fa-phone mr-2"></i>02 43416807</p>
+                        <p><i class="fas fa-mobile-alt mr-2"></i>347 6764038</p>
+                        <p><i class="fas fa-envelope mr-2"></i>info@ortensiagroup.net</p>
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>Via Fanfulla da Lodi 5, 20090 Trezzano sul Naviglio (MI)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-secondary-green mt-8 pt-8 text-center">
+                <p>&copy; 2024 Ortensia Group. Tutti i diritti riservati.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/scripts.js"></script>
+    
+    <script>
+        // Variabili globali
+        let supabaseClient = null;
+        let currentArticle = null;
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeArticlePage();
+        });
+
+        async function initializeArticlePage() {
+            console.log('🚀 Initializing article page...');
+            
+            // Aspetta che la configurazione sia caricata
+            await waitForConfig();
+            
+            // Inizializza Supabase
+            if (window.CONFIG && window.CONFIG.SUPABASE) {
+                supabaseClient = supabase.createClient(window.CONFIG.SUPABASE.url, window.CONFIG.SUPABASE.anonKey);
+                console.log('✅ Supabase connected');
+            } else {
+                console.error('❌ Config not found');
+                showError();
+                return;
+            }
+
+            // Ottieni lo slug dall'URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+            
+            if (!slug) {
+                console.error('❌ No slug provided');
+                showError();
+                return;
+            }
+
+            // Carica l'articolo
+            await loadArticle(slug);
+        }
+
+        function waitForConfig() {
+            return new Promise((resolve) => {
+                const checkConfig = () => {
+                    if (window.CONFIG) {
+                        resolve();
+                    } else {
+                        setTimeout(checkConfig, 100);
+                    }
+                };
+                checkConfig();
+            });
+        }
+
+        async function loadArticle(slug) {
+            try {
+                console.log('📰 Loading article with slug:', slug);
+                
+                const { data, error } = await supabaseClient
+                    .from('articles')
+                    .select('*, categories(name, slug)')
+                    .eq('slug', slug)
+                    .eq('status', 'published')
+                    .single();
+                
+                if (error) {
+                    console.error('❌ Error loading article:', error);
+                    showError();
+                    return;
+                }
+                
+                if (!data) {
+                    console.error('❌ Article not found');
+                    showError();
+                    return;
+                }
+                
+                currentArticle = data;
+                displayArticle(data);
+                
+            } catch (error) {
+                console.error('❌ Error loading article:', error);
+                showError();
+            }
+        }
+
+        function displayArticle(article) {
+            console.log('📄 Displaying article:', article);
+            
+            // Nascondi loading
+            document.getElementById('loading').classList.add('hidden');
+            
+            // Mostra contenuto articolo
+            document.getElementById('article-content').classList.remove('hidden');
+            
+            // Aggiorna meta tags
+            updateMetaTags(article);
+            
+            // Popola contenuto
+            if (article.categories) {
+                document.getElementById('article-category').textContent = article.categories.name;
+                document.getElementById('article-category-name').textContent = article.categories.name;
+            } else {
+                document.getElementById('article-category').style.display = 'none';
+                document.getElementById('article-category-name').textContent = 'Generale';
+            }
+            
+            document.getElementById('article-title').textContent = article.title;
+            document.getElementById('article-date').textContent = formatDate(article.published_at || article.created_at);
+            
+            // Immagine featured
+            const featuredImage = document.getElementById('article-featured-image');
+            if (article.featured_image) {
+                featuredImage.src = article.featured_image;
+                featuredImage.alt = article.title;
+                featuredImage.classList.remove('hidden');
+            } else {
+                featuredImage.classList.add('hidden');
+            }
+            
+            // Contenuto articolo
+            const articleText = document.getElementById('article-text');
+            if (article.content) {
+                articleText.innerHTML = article.content;
+            } else {
+                articleText.innerHTML = '<p>Contenuto non disponibile.</p>';
+            }
+            
+            console.log('✅ Article displayed successfully');
+        }
+
+        function updateMetaTags(article) {
+            // Aggiorna title
+            document.title = `${article.title} - Ortensia Group`;
+            
+            // Aggiorna meta description
+            const metaDescription = document.querySelector('meta[name="description"]');
+            if (metaDescription) {
+                metaDescription.content = article.excerpt || article.title;
+            }
+            
+            // Aggiorna Open Graph
+            const ogTitle = document.querySelector('meta[property="og:title"]');
+            if (ogTitle) {
+                ogTitle.content = article.title;
+            }
+            
+            const ogDescription = document.querySelector('meta[property="og:description"]');
+            if (ogDescription) {
+                ogDescription.content = article.excerpt || article.title;
+            }
+            
+            const ogUrl = document.querySelector('meta[property="og:url"]');
+            if (ogUrl) {
+                ogUrl.content = window.location.href;
+            }
+            
+            // Aggiorna keywords
+            const metaKeywords = document.querySelector('meta[name="keywords"]');
+            if (metaKeywords && article.categories) {
+                metaKeywords.content = `giardinaggio, ortensia group, ${article.categories.name}, ${article.title}`;
+            }
+        }
+
+        function showError() {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('error').classList.remove('hidden');
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('it-IT', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Gestione mobile menu
+        function toggleMobileMenu() {
+            const mobileMenu = document.querySelector('.mobile-menu');
+            const navLinks = document.querySelector('.navbar-nav');
+            
+            if (navLinks.style.display === 'none' || navLinks.style.display === '') {
+                navLinks.style.display = 'flex';
+                navLinks.classList.add('mobile-nav-open');
+            } else {
+                navLinks.style.display = 'none';
+                navLinks.classList.remove('mobile-nav-open');
+            }
+        }
+
+        // Event listener per mobile menu
+        document.querySelector('.mobile-menu').addEventListener('click', toggleMobileMenu);
+    </script>
+</body>
+</html>
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDkBjQfZKPd7nuT1g0o2ne5WBur%2FkGv3bKHf9GpzPT4Y4IbUTscnV9TJDhkoExhI%2FSocTm07mF3aWHMRozD81lVtHKrRcuwPO9OCr7VyrHYmC2MyZh%2FFcgpF9QXEcSuuuVUMMqtqGIeZIGad2nrItFovb5NpFb9jUXs1hM1g7WCnS5RrXhgKK88CxQOh%2F4UG3Wj8t2zwKsk46agXg04JOua8gW4a2WULbTFaVTZ0XQCmeY7rKCKFydxYR%2BOtrZMWcfjs3p87vLR4v01LNB0BL9v8CrWyIN1%2FAdGOm%2B%2Fa6HSEbXFCwOct%2BbIv%2FR%2FPgAxy4%2FO6IWUCa5x6MHAu0cCLanMtxjDF2XJXDA8CLn1nA%2BCcXVnMmSTCtpOAabZjXGWMZ3CnnBVLWmSXONzijJTP9JUjcrh5CxdVBoLbEhXOsUtXL1mg8g1P4hxZ35v7dNroY5NhqsKZ1s55LcQWo33puHmT0gOWAdHJj4M1Mvl5VkxCXx6aRnUibJJKmerm%2FkAw%2B5kko02HsMhUTPkCEePDzrP4%3D";
+        window.__genspark_locale = "it-IT";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDkBjQfZKPd7nuT1g0o2ne5WBur/kGv3bKHf9GpzPT4Y4IbUTscnV9TJDhkoExhI/SocTm07mF3aWHMRozD81lVtHKrRcuwPO9OCr7VyrHYmC2MyZh/FcgpF9QXEcSuuuVUMMqtqGIeZIGad2nrItFovb5NpFb9jUXs1hM1g7WCnS5RrXhgKK88CxQOh/4UG3Wj8t2zwKsk46agXg04JOua8gW4a2WULbTFaVTZ0XQCmeY7rKCKFydxYR+OtrZMWcfjs3p87vLR4v01LNB0BL9v8CrWyIN1/AdGOm+/a6HSEbXFCwOct+bIv/R/PgAxy4/O6IWUCa5x6MHAu0cCLanMtxjDF2XJXDA8CLn1nA+CcXVnMmSTCtpOAabZjXGWMZ3CnnBVLWmSXONzijJTP9JUjcrh5CxdVBoLbEhXOsUtXL1mg8g1P4hxZ35v7dNroY5NhqsKZ1s55LcQWo33puHmT0gOWAdHJj4M1Mvl5VkxCXx6aRnUibJJKmerm/kAw+5kko02HsMhUTPkCEePDzrP4=";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    

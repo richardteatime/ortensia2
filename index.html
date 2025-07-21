@@ -1,0 +1,1152 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ortensia Group - Design Ottimizzato</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2C5F2D;
+            --secondary-green: #4A7C59;
+            --accent-gold: #D4AF37;
+            --light-green: #E8F5E8;
+            --dark-text: #1A3A1B;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--white);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 100%);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-green) 50%, var(--accent-gold) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-overlay {
+            background: rgba(44, 95, 45, 0.85);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-gold), #E6C547);
+            color: var(--dark-text);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            color: var(--dark-text);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-left: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--white);
+            color: var(--primary-green);
+            transform: translateY(-2px);
+        }
+
+        .service-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border-color: var(--accent-gold);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            color: var(--white);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-green);
+            text-align: center;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--secondary-green);
+            text-align: center;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stats-card {
+            background: var(--light-green);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid var(--accent-gold);
+        }
+
+        .stats-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-label {
+            font-size: 1rem;
+            color: var(--secondary-green);
+            font-weight: 500;
+        }
+
+        .testimonial-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        .quote-icon {
+            font-size: 3rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        .footer {
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 3rem 0;
+        }
+
+        .footer-section h3 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-section a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-gold);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .portfolio-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .portfolio-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .portfolio-content {
+            padding: 1.5rem;
+        }
+
+        .portfolio-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-green);
+        }
+
+        .portfolio-description {
+            color: var(--secondary-green);
+            margin-bottom: 1rem;
+        }
+
+        .portfolio-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .portfolio-tag {
+            background: var(--light-green);
+            color: var(--primary-green);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .navbar {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-nav a {
+            color: var(--dark-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav a:hover {
+            color: var(--primary-green);
+        }
+
+        .mobile-menu {
+            display: none;
+        }
+
+        /* Form contatti fix per visibilità testo */
+        .contact-form {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: var(--white);
+            color: var(--dark-text); /* Fix: testo scuro visibile */
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(44, 95, 45, 0.1);
+        }
+
+        .contact-form input::placeholder,
+        .contact-form textarea::placeholder {
+            color: #64748b; /* Fix: placeholder visibile */
+        }
+
+        .contact-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        .contact-form button {
+            background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+            color: var(--white);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .contact-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 95, 45, 0.3);
+        }
+
+        .contact-form button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success {
+            background: #10b981;
+        }
+
+        .notification.error {
+            background: #ef4444;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .btn-secondary {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+            
+            .navbar-nav {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .floating-leaf {
+            position: absolute;
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .floating-leaf:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .floating-leaf:nth-child(2) { top: 20%; right: 10%; animation-delay: 2s; }
+        .floating-leaf:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 4s; }
+        .floating-leaf:nth-child(4) { bottom: 10%; right: 20%; animation-delay: 1s; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="#" class="navbar-brand">
+                <img src="/ortensia-logo.png">
+            </a>
+            <div class="navbar-nav">
+                <a href="#home">Home</a>
+                <a href="#chi-siamo">Chi Siamo</a>
+                <a href="#servizi">Servizi</a>
+                <a href="lavori.html">I Nostri Lavori</a>
+                <a href="blog.html">Blog</a>
+                <a href="#contatti">Contatti</a>
+            </div>
+            <div class="mobile-menu">
+                <i class="fas fa-bars text-2xl text-primary-green cursor-pointer" onclick="toggleMenu()"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section min-h-screen flex items-center relative">
+        <div class="hero-overlay"></div>
+        <div class="floating-elements">
+            <div class="floating-leaf"><i class="fas fa-leaf"></i></div>
+            <div class="floating-leaf"><i class="fas fa-seedling"></i></div>
+            <div class="floating-leaf"><i class="fas fa-tree"></i></div>
+            <div class="floating-leaf"><i class="fas fa-leaf"></i></div>
+        </div>
+        
+        <div class="container mx-auto px-4 hero-content">
+            <div class="max-w-4xl mx-auto text-center text-white">
+                <h1 class="hero-title animate-fade-in">
+                    Trasformiamo i Tuoi Spazi Verdi in Opere d'Arte
+                </h1>
+                <p class="hero-subtitle animate-slide-up">
+                    Da oltre 25 anni creiamo giardini da sogno e curiamo ogni dettaglio del tuo ambiente esterno con passione e professionalità
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center items-center animate-slide-up">
+                    <a href="#contatti" class="btn-primary inline-flex items-center">
+                        <i class="fas fa-phone mr-2"></i>
+                        Richiedi Preventivo Gratuito
+                    </a>
+                    <a href="lavori.html" class="btn-secondary inline-flex items-center">
+                        <i class="fas fa-eye mr-2"></i>
+                        Scopri i Nostri Lavori
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chi Siamo -->
+    <section id="chi-siamo" class="py-20 bg-light-gray">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="section-title">Chi Siamo</h2>
+                <p class="section-subtitle">
+                    La passione per il verde che si trasforma in eccellenza professionale
+                </p>
+                
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="animate-fade-in">
+                        <img src="https://verdant-semolina-e063ba.netlify.app/images/giardinochisiamo.jpg" alt="Giardino Ortensia Group" class="rounded-3xl shadow-2xl w-full h-96 object-cover">
+                    </div>
+                    <div class="animate-slide-up">
+                        <h3 class="text-2xl font-bold mb-6 text-primary-green">25 Anni di Eccellenza nel Verde</h3>
+                        <p class="text-lg mb-6 text-secondary-green">
+                            Ortensia Group rappresenta l'eccellenza nel settore del giardinaggio e della cura degli spazi verdi. La nostra esperienza ventennale ci ha permesso di perfezionare ogni aspetto del nostro lavoro, dal design alla realizzazione, dalla manutenzione alla consulenza specializzata.
+                        </p>
+                        <p class="text-lg mb-8 text-secondary-green">
+                            Ci distinguiamo per la capacità di trasformare ogni spazio esterno in un'oasi di bellezza e funzionalità, rispettando sempre l'ambiente e utilizzando le tecnologie più innovative del settore.
+                        </p>
+                        
+                        <div class="grid grid-cols-2 gap-6 mb-8">
+                            <div class="stats-card">
+                                <div class="stats-number" id="projects-count">600+</div>
+                                <div class="stats-label">Progetti Completati</div>
+                            </div>
+                            <div class="stats-card">
+                                <div class="stats-number">25+</div>
+                                <div class="stats-label">Anni di Esperienza</div>
+                            </div>
+                        </div>
+                        
+                        <a href="#contatti" class="btn-primary inline-flex items-center">
+                            <i class="fas fa-handshake mr-2"></i>
+                            Inizia il Tuo Progetto
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servizi -->
+    <section id="servizi" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="section-title">I Nostri Servizi</h2>
+                <p class="section-subtitle">
+                    Soluzioni complete per ogni esigenza del tuo spazio verde
+                </p>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="service-card animate-fade-in">
+                        <div class="service-icon">
+                            <i class="fas fa-cut"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-primary-green">Progettazione Giardini</h3>
+                        <p class="text-secondary-green mb-4">
+                            Creiamo giardini personalizzati che riflettono il tuo stile e si integrano perfettamente con l'ambiente circostante.
+                        </p>
+                        <ul class="text-sm text-secondary-green">
+                            <li>• Design 3D personalizzato</li>
+                            <li>• Selezione piante autoctone</li>
+                            <li>• Consulenza paesaggistica</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="service-card animate-fade-in">
+                        <div class="service-icon">
+                            <i class="fas fa-tint"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-primary-green">Impianti di Irrigazione</h3>
+                        <p class="text-secondary-green mb-4">
+                            Sistemi di irrigazione intelligenti e automatizzati per mantenere il tuo giardino sempre perfetto.
+                        </p>
+                        <ul class="text-sm text-secondary-green">
+                            <li>• Irrigazione programmabile</li>
+                            <li>• Sensori di umidità</li>
+                            <li>• Risparmio idrico garantito</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="service-card animate-fade-in">
+                        <div class="service-icon">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-primary-green">Potatura Professionale</h3>
+                        <p class="text-secondary-green mb-4">
+                            Servizi di potatura specializzata per mantenere le tue piante in salute e esteticamente perfette.
+                        </p>
+                        <ul class="text-sm text-secondary-green">
+                            <li>• Potatura di formazione</li>
+                            <li>• Potatura di mantenimento</li>
+                            <li>• Cura delle malattie</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="service-card animate-fade-in">
+                        <div class="service-icon">
+                            <i class="fas fa-hammer"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-primary-green">Disboscamento</h3>
+                        <p class="text-secondary-green mb-4">
+                            Rimozione sicura e professionale di alberi e vegetazione per preparare nuovi spazi verdi.
+                        </p>
+                        <ul class="text-sm text-secondary-green">
+                            <li>• Abbattimento controllato</li>
+                            <li>• Smaltimento autorizzato</li>
+                            <li>• Bonifica completa</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="service-card animate-fade-in">
+                        <div class="service-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-primary-green">Sanificazione</h3>
+                        <p class="text-secondary-green mb-4">
+                            Trattamenti specializzati per la salute delle piante e la sanificazione degli ambienti esterni.
+                        </p>
+                        <ul class="text-sm text-secondary-green">
+                            <li>• Trattamenti antiparassitari</li>
+                            <li>• Disinfestazione naturale</li>
+                            <li>• Prevenzione malattie</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="service-card animate-fade-in">
+                        <div class="service-icon">
+                            <i class="fas fa-recycle"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-primary-green">Gestione Rifiuti</h3>
+                        <p class="text-secondary-green mb-4">
+                            Smaltimento ecologico e autorizzato di rifiuti verdi e speciali nel rispetto dell'ambiente.
+                        </p>
+                        <ul class="text-sm text-secondary-green">
+                            <li>• Raccolta differenziata</li>
+                            <li>• Smaltimento certificato</li>
+                            <li>• Compostaggio organico</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio - I Nostri Lavori -->
+    <section id="portfolio" class="py-20 bg-light-gray">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="section-title">I Nostri Lavori</h2>
+                <p class="section-subtitle">
+                    Esplora i nostri progetti più significativi e lasciati ispirare
+                </p>
+                
+                <div class="portfolio-grid" id="portfolio-grid">
+                    <!-- Portfolio caricato dinamicamente -->
+                </div>
+                
+                <div class="text-center mt-8">
+                    <a href="lavori.html" class="btn-primary inline-flex items-center">
+                        <i class="fas fa-eye mr-2"></i>
+                        Vedi Tutti i Lavori
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="section-title">Cosa Dicono di Noi</h2>
+                <p class="section-subtitle">
+                    La soddisfazione dei nostri clienti è la nostra migliore referenza
+                </p>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="testimonial-card animate-fade-in">
+                        <div class="quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="text-lg text-secondary-green mb-4">
+                            "Ortensia Group ha trasformato il nostro giardino in un vero paradiso. La loro professionalità e attenzione ai dettagli sono impareggiabili."
+                        </p>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-primary-green rounded-full flex items-center justify-center text-white font-bold mr-4">
+                                MR
+                            </div>
+                            <div>
+                                <div class="font-bold text-primary-green">Marco Rossi</div>
+                                <div class="text-sm text-secondary-green">Proprietario Villa Milano</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card animate-fade-in">
+                        <div class="quote-icon">
+                            <i class="fas fa-quote-left"></i>
+                        </div>
+                        <p class="text-lg text-secondary-green mb-4">
+                            "Il team di Ortensia Group è sempre puntuale, professionale e attento all'ambiente. Consiglio vivamente i loro servizi!"
+                        </p>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-primary-green rounded-full flex items-center justify-center text-white font-bold mr-4">
+                                LB
+                            </div>
+                            <div>
+                                <div class="font-bold text-primary-green">Laura Bianchi</div>
+                                <div class="text-sm text-secondary-green">CEO Green Solutions</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contatti -->
+    <section id="contatti" class="py-20 gradient-bg">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center text-white mb-12">
+                <h2 class="text-4xl font-bold mb-6">Pronto a Trasformare il Tuo Spazio Verde?</h2>
+                <p class="text-xl mb-8">
+                    Contattaci oggi per un preventivo gratuito e personalizzato
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-accent-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-phone text-2xl text-dark-text"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Telefono</h3>
+                        <p class="text-lg">02 43416807</p>
+                        <p class="text-lg">347 6764038</p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-accent-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-envelope text-2xl text-dark-text"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Email</h3>
+                        <p class="text-lg"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="95fcfbf3fad5fae7e1f0fbe6fcf4f2e7fae0e5bbfbf0e1">[email&#160;protected]</a></p>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-accent-gold rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-map-marker-alt text-2xl text-dark-text"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Indirizzo</h3>
+                        <p class="text-lg">Via Fanfulla da Lodi 5</p>
+                        <p class="text-lg">20090 Trezzano sul Naviglio (MI)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Contatti -->
+            <div class="contact-form">
+                <h3 class="text-2xl font-bold mb-6 text-primary-green text-center">Invia un Messaggio</h3>
+                <form id="contact-form" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="name">Nome *</label>
+                            <input type="text" id="name" name="name" required placeholder="Il tuo nome">
+                        </div>
+                        <div>
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" name="email" required placeholder="La tua email">
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="phone">Telefono</label>
+                            <input type="tel" id="phone" name="phone" placeholder="Il tuo numero di telefono">
+                        </div>
+                        <div>
+                            <label for="subject">Oggetto</label>
+                            <input type="text" id="subject" name="subject" placeholder="Oggetto del messaggio">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="message">Messaggio *</label>
+                        <textarea id="message" name="message" rows="5" required placeholder="Scrivi il tuo messaggio qui..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="w-full">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Invia Messaggio
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="footer-section">
+                    <h3 class="text-xl font-bold mb-4">
+                        <i class="fas fa-leaf mr-2"></i>Ortensia Group
+                    </h3>
+                    <p class="text-white mb-4">
+                        Da oltre 25 anni trasformiamo i sogni in realtà, creando spazi verdi unici e sostenibili.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-2xl hover:text-accent-gold transition-colors">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="text-2xl hover:text-accent-gold transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-2xl hover:text-accent-gold transition-colors">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Servizi</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#servizi">Progettazione Giardini</a></li>
+                        <li><a href="#servizi">Impianti Irrigazione</a></li>
+                        <li><a href="#servizi">Potatura</a></li>
+                        <li><a href="#servizi">Disboscamento</a></li>
+                        <li><a href="#servizi">Sanificazione</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Azienda</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#chi-siamo">Chi Siamo</a></li>
+                        <li><a href="lavori.html">I Nostri Lavori</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="#contatti">Contatti</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contatti</h3>
+                    <div class="space-y-2">
+                        <p><i class="fas fa-phone mr-2"></i>02 43416807</p>
+                        <p><i class="fas fa-mobile-alt mr-2"></i>347 6764038</p>
+                        <p><i class="fas fa-envelope mr-2"></i><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a6cfc8c0c9e6c9d4d2c3c8d5cfc7c1d4c9d3d688c8c3d2">[email&#160;protected]</a></p>
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>Via Fanfulla da Lodi 5, 20090 Trezzano sul Naviglio (MI)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-secondary-green mt-8 pt-8 text-center">
+                <p>&copy; 2024 Ortensia Group. Tutti i diritti riservati.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/scripts.js"></script>
+
+    <script>
+        // Variabile per il client Supabase
+        let supabaseClient = null;
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeHomepage();
+        });
+
+        async function initializeHomepage() {
+            console.log('🚀 Initializing homepage...');
+            
+            // Aspetta che la configurazione sia caricata
+            await waitForConfig();
+            
+            // Inizializza Supabase
+            if (window.CONFIG && window.CONFIG.SUPABASE) {
+                supabaseClient = supabase.createClient(window.CONFIG.SUPABASE.url, window.CONFIG.SUPABASE.anonKey);
+                console.log('✅ Supabase connected');
+            } else {
+                console.error('❌ Config not found');
+                return;
+            }
+
+            // Carica portfolio per la home
+            await loadPortfolioHome();
+            
+            // Setup form contatti
+            setupContactForm();
+            
+            console.log('✅ Homepage initialized');
+        }
+
+        function waitForConfig() {
+            return new Promise((resolve) => {
+                const checkConfig = () => {
+                    if (window.CONFIG) {
+                        resolve();
+                    } else {
+                        setTimeout(checkConfig, 100);
+                    }
+                };
+                checkConfig();
+            });
+        }
+
+        async function loadPortfolioHome() {
+            if (!supabaseClient) return;
+            
+            try {
+                console.log('🔄 Loading portfolio for home...');
+                
+                const { data, error } = await supabaseClient
+                    .from('projects')
+                    .select(`
+                        *,
+                        categories(name, slug),
+                        project_images(*)
+                    `)
+                    .eq('status', 'published')
+                    .order('created_at', { ascending: false })
+                    .limit(4);
+                
+                if (error) {
+                    console.error('❌ Error loading portfolio:', error);
+                    return;
+                }
+                
+                console.log('✅ Portfolio loaded:', data.length, 'projects');
+                
+                const portfolioGrid = document.getElementById('portfolio-grid');
+                
+                if (data.length === 0) {
+                    portfolioGrid.innerHTML = `
+                        <div class="col-span-full text-center py-8">
+                            <p class="text-gray-500">Nessun progetto disponibile al momento.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                portfolioGrid.innerHTML = data.map(project => {
+                    // Trova l'immagine giusta (priorità: dopo > durante > prima)
+                    let imageUrl = 'https://via.placeholder.com/400x300?text=Immagine+non+disponibile';
+                    
+                    if (project.project_images && project.project_images.length > 0) {
+                        const afterImage = project.project_images.find(img => img.type === 'after');
+                        const duringImage = project.project_images.find(img => img.type === 'during');
+                        const beforeImage = project.project_images.find(img => img.type === 'before');
+                        
+                        if (afterImage) {
+                            imageUrl = afterImage.image_url;
+                        } else if (duringImage) {
+                            imageUrl = duringImage.image_url;
+                        } else if (beforeImage) {
+                            imageUrl = beforeImage.image_url;
+                        }
+                    } else if (project.featured_image) {
+                        imageUrl = project.featured_image;
+                    }
+                    
+                    return `
+                        <div class="portfolio-card" onclick="window.location.href='lavori.html'">
+                            <img src="${imageUrl}" alt="${project.title}" class="portfolio-image" onerror="this.src='https://via.placeholder.com/400x300?text=Immagine+non+disponibile'">
+                            <div class="portfolio-content">
+                                <h3 class="portfolio-title">${project.title}</h3>
+                                <p class="portfolio-description">
+                                    ${project.description ? project.description.substring(0, 100) + '...' : 'Nessuna descrizione disponibile'}
+                                </p>
+                                <div class="portfolio-tags">
+                                    ${project.categories ? `<span class="portfolio-tag">${project.categories.name}</span>` : ''}
+                                    ${project.location ? `<span class="portfolio-tag">${project.location}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('❌ Error loading portfolio:', error);
+                const portfolioGrid = document.getElementById('portfolio-grid');
+                portfolioGrid.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <p class="text-red-500">Errore nel caricamento dei progetti.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function setupContactForm() {
+            const contactForm = document.getElementById('contact-form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', handleContactSubmit);
+            }
+        }
+
+        async function handleContactSubmit(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            // Mostra loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Invio in corso...';
+            
+            try {
+                const contactData = {
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone') || null,
+                    subject: formData.get('subject') || 'Richiesta informazioni',
+                    message: formData.get('message')
+                };
+                
+                console.log('📧 Sending contact:', contactData);
+                
+                const { data, error } = await supabaseClient
+                    .from('contacts')
+                    .insert([contactData]);
+                
+                if (error) throw error;
+                
+                console.log('✅ Contact sent successfully');
+                
+                showNotification('Messaggio inviato con successo! Ti ricontatteremo presto.', 'success');
+                e.target.reset();
+                
+            } catch (error) {
+                console.error('❌ Error sending contact:', error);
+                showNotification('Errore durante l\'invio del messaggio. Riprova più tardi.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Invia Messaggio';
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check' : 'exclamation-triangle'} mr-2"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        function toggleMenu() {
+            const navLinks = document.querySelector('.navbar-nav');
+            navLinks.classList.toggle('active');
+        }
+
+        // Animation on scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.animate-fade-in, .animate-slide-up');
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('animate-fade-in');
+                }
+            });
+        }
+
+        // Add scroll event listener
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Run animation on page load
+        animateOnScroll();
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"960afd9dfe46c407","serverTiming":{"name":{"cfExtPri":true,"cfEdge":true,"cfOrigin":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"version":"2025.7.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' crossorigin="anonymous"></script>
+</body>
+</html>
+    

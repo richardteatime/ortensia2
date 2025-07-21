@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="it" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database Setup - Ortensia Group</title>
+    <style>
+      body {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 32px 80px;
+        position: relative;
+        box-sizing: border-box;
+        font-family: 'Times New Roman', serif;
+        line-height: 1.6;
+        color: #000;
+        background: #fff;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 32px;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 32px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid #000;
+        padding-bottom: 4px;
+      }
+
+      h3 {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 24px;
+        margin-bottom: 12px;
+      }
+
+      p {
+        margin-bottom: 12px;
+        text-align: justify;
+      }
+
+      pre {
+        background: #f5f5f5;
+        border: 1px solid #ccc;
+        padding: 16px;
+        margin: 16px 0;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        line-height: 1.4;
+        overflow-x: visible;
+        white-space: pre-wrap;
+      }
+
+      code {
+        font-family: 'Courier New', monospace;
+        background: #f5f5f5;
+        padding: 2px 4px;
+        font-size: 12px;
+      }
+
+      ul,
+      ol {
+        margin-left: 24px;
+        margin-bottom: 16px;
+      }
+
+      li {
+        margin-bottom: 8px;
+      }
+
+      .note {
+        font-style: italic;
+        color: #666;
+        margin: 16px 0;
+        padding: 8px;
+        border-left: 3px solid #ccc;
+      }
+
+      .important {
+        font-weight: bold;
+        color: #000;
+      }
+
+      .page-break {
+        page-break-before: always;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Database Setup - Ortensia Group</h1>
+
+    <p>
+      <strong
+        >Documento tecnico per la configurazione completa del database Supabase per il sito web Ortensia Group</strong
+      >
+    </p>
+
+    <p>
+      Questo documento contiene tutte le query SQL necessarie per configurare il database PostgreSQL tramite Supabase,
+      incluse le tabelle principali, le politiche di sicurezza RLS e i dati di esempio.
+    </p>
+
+    <h2>1. Configurazione Iniziale</h2>
+
+    <h3>1.1 Informazioni Progetto</h3>
+    <ul>
+      <li><strong>Database:</strong> PostgreSQL (Supabase)</li>
+      <li><strong>Versione:</strong> 15.x o superiore</li>
+      <li><strong>Sicurezza:</strong> Row Level Security (RLS) abilitata</li>
+      <li><strong>Autenticazione:</strong> Supabase Auth integrata</li>
+    </ul>
+
+    <h3>1.2 Estensioni Necessarie</h3>
+    <pre>
+-- Abilita UUID per chiavi primarie
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Abilita funzioni per timestamp automatici
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+    </pre>
+
+    <h2>2. Creazione Tabelle Principali</h2>
+
+    <h3>2.1 Tabella Utenti Amministratori</h3>
+    <pre>
+-- Tabella per utenti amministratori del sistema
+CREATE TABLE users (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    role VARCHAR(50) DEFAULT 'editor' CHECK (role IN ('admin', 'editor', 'contributor')),
+    avatar_url VARCHAR(500),
+    is_active BOOLEAN DEFAULT true,
+    last_login TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Indice per ottimizzare ricerche per email
+CREATE INDEX idx_users_email ON users(email);
+
+-- Trigger per aggiornare updated_at automaticamente
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    </pre>
+
+    <h3>2.2 Tabella Categorie</h3>
+    <pre>
+-- Tabella per categorie (blog e progetti)
+CREATE TABLE categories (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    type VARCHAR(50) NOT NULL CHECK (type IN ('project', 'blog')),
+    description TEXT,
+    color VARCHAR(7) DEFAULT '#2C5F2D',
+    sort_order INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Indici per ottimizzazione
+CREATE INDEX idx_categories_type ON categories(type);
+CREATE INDEX idx_categories_slug ON categories(slug);
+CREATE INDEX idx_categories_active ON categories(is_active);
+
+-- Trigger per updated_at
+CREATE TRIGGER update_categories_updated_at BEFORE UPDATE ON categories
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    </pre>
+
+    <h3>2.3 Tabella Articoli Blog</h3>
+    <pre>
+-- Tabella per articoli del blog
+CREATE TABLE articles (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    content TEXT,
+    excerpt TEXT,
+    featured_image VARCHAR(500),
+    category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
+    author_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    status VARCHAR(50) DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived')),
+    seo_title VARCHAR(255),
+    seo_description TEXT,
+    seo_keywords VARCHAR(500),
+    view_count INTEGER DEFAULT 0,
+    is_featured BOOLEAN DEFAULT false,
+    published_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Indici per ottimizzazione
+CREATE INDEX idx_articles_status ON articles(status);
+CREATE INDEX idx_articles_category ON articles(category_id);
+CREATE INDEX idx_articles_author ON articles(author_id);
+CREATE INDEX idx_articles_published ON articles(published_at);
+CREATE INDEX idx_articles_slug ON articles(slug);
+CREATE INDEX idx_articles_featured ON articles(is_featured);
+
+-- Trigger per updated_at
+CREATE TRIGGER update_articles_updated_at BEFORE UPDATE ON articles
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    </pre>
+
+    <h3>2.4 Tabella Progetti</h3>
+    <pre>
+-- Tabella per progetti/lavori realizzati
+CREATE TABLE projects (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    description TEXT,
+    category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
+    status VARCHAR(50) DEFAULT 'published' CHECK (status IN ('draft', 'published', 'archived')),
+    featured_image VARCHAR(500),
+    location VARCHAR(255),
+    surface_area INTEGER, -- in metri quadrati
+    duration_weeks INTEGER,
+    completion_date DATE,
+    client_name VARCHAR(255),
+    client_testimonial TEXT,
+    budget_range VARCHAR(50),
+    difficulty_level VARCHAR(50) DEFAULT 'medium' CHECK (difficulty_level IN ('easy', 'medium', 'hard')),
+    is_featured BOOLEAN DEFAULT false,
+    sort_order INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Indici per ottimizzazione
+CREATE INDEX idx_projects_status ON projects(status);
+CREATE INDEX idx_projects_category ON projects(category_id);
+CREATE INDEX idx_projects_featured ON projects(is_featured);
+CREATE INDEX idx_projects_completion ON projects(completion_date);
+CREATE INDEX idx_projects_slug ON projects(slug);
+
+-- Trigger per updated_at
+CREATE TRIGGER update_projects_updated_at BEFORE UPDATE ON projects
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    </pre>
+
+    <h3>2.5 Tabella Immagini Progetti</h3>
+    <pre>
+-- Tabella per immagini dei progetti (prima/durante/dopo)
+CREATE TABLE project_images (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    image_url VARCHAR(500) NOT NULL,
+    thumbnail_url VARCHAR(500),
+    type VARCHAR(50) NOT NULL CHECK (type IN ('before', 'during', 'after', 'detail')),
+    alt_text VARCHAR(255),
+    caption TEXT,
+    order_number INTEGER DEFAULT 0,
+    file_size INTEGER, -- in bytes
+    width INTEGER,
+    height INTEGER,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Indici per ottimizzazione
+CREATE INDEX idx_project_images_project ON project_images(project_id);
+CREATE INDEX idx_project_images_type ON project_images(type);
+CREATE INDEX idx_project_images_order ON project_images(project_id, order_number);
+    </pre>
+
+    <h3>2.6 Tabella Tag</h3>
+    <pre>
+-- Tabella per tag degli articoli
+CREATE TABLE tags (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    description TEXT,
+    color VARCHAR(7) DEFAULT '#4A7C59',
+    usage_count INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Indice per ottimizzazione
+CREATE INDEX idx_tags_slug ON tags(slug);
+CREATE INDEX idx_tags_usage ON tags(usage_count);
+    </pre>
+
+    <h3>2.7 Tabella Relazioni Articoli-Tag</h3>
+    <pre>
+-- Tabella di relazione molti-a-molti tra articoli e tag
+CREATE TABLE article_tags (
+    article_id UUID REFERENCES articles(id) ON DELETE CASCADE,
+    tag_id UUID REFERENCES tags(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    PRIMARY KEY (article_id, tag_id)
+);
+
+-- Indici per ottimizzazione
+CREATE INDEX idx_article_tags_article ON article_tags(article_id);
+CREATE INDEX idx_article_tags_tag ON article_tags(tag_id);
+    </pre>
+
+    <h3>2.8 Tabella Contatti</h3>
+    <pre>
+-- Tabella per messaggi di contatto
+CREATE TABLE contacts (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(50),
+    company VARCHAR(255),
+    subject VARCHAR(255),
+    message TEXT NOT NULL,
+    service_type VARCHAR(100),
+    budget_range VARCHAR(50),
+    preferred_contact VARCHAR(50) DEFAULT 'email' CHECK (preferred_contact IN ('email', 'phone', 'both')),
+    status VARCHAR(50) DEFAULT 'new' CHECK (status IN ('new', 'read', 'replied', 'closed')),
+    priority VARCHAR(50) DEFAULT 'normal' CHECK (priority IN ('low', 'normal', 'high', 'urgent')),
+    notes TEXT,
+    ip_address INET,
+    user_agent TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Indici per ottimizzazione
+CREATE INDEX idx_contacts_status ON contacts(status);
+CREATE INDEX idx_contacts_priority ON contacts(priority);
+CREATE INDEX idx_contacts_email ON contacts(email);
+CREATE INDEX idx_contacts_created ON contacts(created_at);
+
+-- Trigger per updated_at
+CREATE TRIGGER update_contacts_updated_at BEFORE UPDATE ON contacts
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    </pre>
+
+    <h2>3. Configurazione Row Level Security (RLS)</h2>
+
+    <h3>3.1 Abilitazione RLS</h3>
+    <pre>
+-- Abilita RLS per tutte le tabelle
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE articles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE project_images ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tags ENABLE ROW LEVEL SECURITY;
+ALTER TABLE article_tags ENABLE ROW LEVEL SECURITY;
+ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
+    </pre>
+
+    <h3>3.2 Politiche di Sicurezza</h3>
+    <pre>
+-- Politiche per lettura pubblica contenuti pubblicati
+CREATE POLICY "Public read published articles" ON articles
+FOR SELECT USING (status = 'published');
+
+CREATE POLICY "Public read published projects" ON projects
+FOR SELECT USING (status = 'published');
+
+CREATE POLICY "Public read active categories" ON categories
+FOR SELECT USING (is_active = true);
+
+CREATE POLICY "Public read project images" ON project_images
+FOR SELECT USING (
+    project_id IN (
+        SELECT id FROM projects WHERE status = 'published'
+    )
+);
+
+CREATE POLICY "Public read tags" ON tags
+FOR SELECT USING (true);
+
+CREATE POLICY "Public read article tags" ON article_tags
+FOR SELECT USING (
+    article_id IN (
+        SELECT id FROM articles WHERE status = 'published'
+    )
+);
+
+-- Politiche per inserimento contatti
+CREATE POLICY "Anyone can insert contacts" ON contacts
+FOR INSERT WITH CHECK (true);
+
+-- Politiche per amministratori autenticati
+CREATE POLICY "Admin full access articles" ON articles
+FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Admin full access projects" ON projects
+FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Admin full access categories" ON categories
+FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Admin full access project_images" ON project_images
+FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Admin full access tags" ON tags
+FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Admin full access article_tags" ON article_tags
+FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Admin full access contacts" ON contacts
+FOR ALL USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Admin full access users" ON users
+FOR ALL USING (auth.role() = 'authenticated');
+    </pre>
+
+    <h2>4. Dati Iniziali</h2>
+
+    <h3>4.1 Utente Amministratore</h3>
+    <pre>
+-- Inserimento primo utente admin
+INSERT INTO users (email, password_hash, name, role) VALUES
+('admin@ortensiagroup.net', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBdXwtO/0M6m6O', 'Amministratore', 'admin');
+
+-- Nota: La password hash corrisponde a 'password123' - CAMBIARE IN PRODUZIONE!
+    </pre>
+
+    <h3>4.2 Categorie Iniziali</h3>
+    <pre>
+-- Categorie per blog
+INSERT INTO categories (name, slug, type, description, color, sort_order) VALUES
+('Consigli Giardinaggio', 'consigli-giardinaggio', 'blog', 'Suggerimenti e tecniche per la cura del giardino', '#2C5F2D', 1),
+('Stagionalità', 'stagionalita', 'blog', 'Consigli per ogni stagione dell''anno', '#4A7C59', 2),
+('Piante e Fiori', 'piante-fiori', 'blog', 'Tutto su piante, fiori e coltivazione', '#7FB069', 3),
+('Manutenzione', 'manutenzione', 'blog', 'Guide per la manutenzione del giardino', '#D4AF37', 4),
+('Sostenibilità', 'sostenibilita', 'blog', 'Pratiche eco-friendly per il giardino', '#8FBC8F', 5);
+
+-- Categorie per progetti
+INSERT INTO categories (name, slug, type, description, color, sort_order) VALUES
+('Giardini Privati', 'giardini-privati', 'project', 'Realizzazione giardini per abitazioni private', '#2C5F2D', 1),
+('Spazi Commerciali', 'spazi-commerciali', 'project', 'Progettazione aree verdi per aziende e uffici', '#4A7C59', 2),
+('Impianti Irrigazione', 'impianti-irrigazione', 'project', 'Installazione e manutenzione sistemi irrigazione', '#7FB069', 3),
+('Potatura e Cura', 'potatura-cura', 'project', 'Servizi di potatura e manutenzione piante', '#D4AF37', 4),
+('Disboscamento', 'disboscamento', 'project', 'Servizi di disboscamento e pulizia aree verdi', '#8FBC8F', 5),
+('Ristrutturazione', 'ristrutturazione', 'project', 'Riqualificazione e ristrutturazione giardini esistenti', '#B8860B', 6);
+    </pre>
+
+    <h3>4.3 Tag Iniziali</h3>
+    <pre>
+-- Tag comuni per articoli
+INSERT INTO tags (name, slug, description, color) VALUES
+('Primavera', 'primavera', 'Articoli relativi alla stagione primaverile', '#90EE90'),
+('Estate', 'estate', 'Articoli relativi alla stagione estiva', '#FFD700'),
+('Autunno', 'autunno', 'Articoli relativi alla stagione autunnale', '#FF8C00'),
+('Inverno', 'inverno', 'Articoli relativi alla stagione invernale', '#87CEEB'),
+('Irrigazione', 'irrigazione', 'Articoli sui sistemi di irrigazione', '#4169E1'),
+('Potatura', 'potatura', 'Articoli sulla potatura delle piante', '#228B22'),
+('Prato', 'prato', 'Articoli sulla cura del prato', '#32CD32'),
+('Fiori', 'fiori', 'Articoli sui fiori e la fioritura', '#FF69B4'),
+('Alberi', 'alberi', 'Articoli su alberi e arbusti', '#8B4513'),
+('Eco-friendly', 'eco-friendly', 'Pratiche sostenibili per il giardino', '#7CFC00'),
+('Fai da te', 'fai-da-te', 'Progetti che si possono realizzare autonomamente', '#FF4500'),
+('Professionale', 'professionale', 'Servizi che richiedono intervento professionale', '#4B0082');
+    </pre>
+
+    <h2>5. Funzioni Utility</h2>
+
+    <h3>5.1 Funzione per Aggiornare Contatori</h3>
+    <pre>
+-- Funzione per aggiornare il contatore usage di tag
+CREATE OR REPLACE FUNCTION update_tag_usage_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE tags SET usage_count = usage_count + 1 WHERE id = NEW.tag_id;
+        RETURN NEW;
+    ELSIF TG_OP = 'DELETE' THEN
+        UPDATE tags SET usage_count = usage_count - 1 WHERE id = OLD.tag_id;
+        RETURN OLD;
+    END IF;
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger per aggiornare automaticamente usage_count
+CREATE TRIGGER update_tag_usage_trigger
+AFTER INSERT OR DELETE ON article_tags
+FOR EACH ROW EXECUTE FUNCTION update_tag_usage_count();
+    </pre>
+
+    <h3>5.2 Funzione per Generare Slug</h3>
+    <pre>
+-- Funzione per generare slug unici
+CREATE OR REPLACE FUNCTION generate_slug(input_text TEXT, table_name TEXT)
+RETURNS TEXT AS $$
+DECLARE
+    base_slug TEXT;
+    final_slug TEXT;
+    counter INTEGER := 0;
+    slug_exists BOOLEAN;
+BEGIN
+    -- Converte il testo in slug base
+    base_slug := lower(trim(input_text));
+    base_slug := regexp_replace(base_slug, '[^a-z0-9\s-]', '', 'g');
+    base_slug := regexp_replace(base_slug, '\s+', '-', 'g');
+    base_slug := regexp_replace(base_slug, '-+', '-', 'g');
+    base_slug := trim(base_slug, '-');
+    
+    final_slug := base_slug;
+    
+    -- Controlla se lo slug esiste già
+    LOOP
+        EXECUTE 'SELECT EXISTS(SELECT 1 FROM ' || table_name || ' WHERE slug = $1)' 
+        INTO slug_exists 
+        USING final_slug;
+        
+        IF NOT slug_exists THEN
+            EXIT;
+        END IF;
+        
+        counter := counter + 1;
+        final_slug := base_slug || '-' || counter;
+    END LOOP;
+    
+    RETURN final_slug;
+END;
+$$ LANGUAGE plpgsql;
+    </pre>
+
+    <h2>6. Query di Esempio</h2>
+
+    <h3>6.1 Inserimento Articolo Completo</h3>
+    <pre>
+-- Inserimento articolo di esempio
+INSERT INTO articles (
+    title, 
+    slug, 
+    content, 
+    excerpt, 
+    featured_image, 
+    category_id, 
+    author_id, 
+    status, 
+    seo_title, 
+    seo_description, 
+    seo_keywords,
+    is_featured,
+    published_at
+) VALUES (
+    'Come Preparare il Giardino per la Primavera',
+    'come-preparare-giardino-primavera',
+    '<h2>Guida Completa alla Preparazione Primaverile</h2>
+     <p>La primavera è il momento ideale per rinnovare il tuo giardino...</p>
+     <h3>Operazioni Essenziali</h3>
+     <ul>
+       <li>Pulizia delle aiuole</li>
+       <li>Potatura delle piante</li>
+       <li>Preparazione del terreno</li>
+     </ul>',
+    'Scopri come preparare il tuo giardino per la stagione primaverile con i nostri consigli esperti.',
+    'https://example.com/primavera-giardino.jpg',
+    (SELECT id FROM categories WHERE slug = 'stagionalita'),
+    (SELECT id FROM users WHERE email = 'admin@ortensiagroup.net'),
+    'published',
+    'Come Preparare il Giardino per la Primavera - Guida Completa',
+    'Guida completa per preparare il giardino in primavera: pulizia, potatura, semina e cura delle piante.',
+    'giardino primavera, preparazione giardino, cura piante, potatura, semina',
+    true,
+    NOW()
+);
+
+-- Associa tag all'articolo
+INSERT INTO article_tags (article_id, tag_id) VALUES 
+((SELECT id FROM articles WHERE slug = 'come-preparare-giardino-primavera'), 
+ (SELECT id FROM tags WHERE slug = 'primavera')),
+((SELECT id FROM articles WHERE slug = 'come-preparare-giardino-primavera'), 
+ (SELECT id FROM tags WHERE slug = 'potatura'));
+    </pre>
+
+    <h3>6.2 Inserimento Progetto Completo</h3>
+    <pre>
+-- Inserimento progetto di esempio
+INSERT INTO projects (
+    title,
+    slug,
+    description,
+    category_id,
+    status,
+    featured_image,
+    location,
+    surface_area,
+    duration_weeks,
+    completion_date,
+    client_name,
+    client_testimonial,
+    budget_range,
+    difficulty_level,
+    is_featured
+) VALUES (
+    'Giardino Villa Moderna Milano',
+    'giardino-villa-moderna-milano',
+    'Progettazione e realizzazione completa di giardino per villa moderna di 400 mq. Il progetto ha incluso la creazione di zone relax, impianto di irrigazione automatizzato, prato inglese e aiuole con piante autoctone.',
+    (SELECT id FROM categories WHERE slug = 'giardini-privati'),
+    'published',
+    'https://example.com/villa-moderna-featured.jpg',
+    'Milano, Zona Brera',
+    400,
+    3,
+    '2024-05-15',
+    'Famiglia Rossi',
+    'Siamo rimasti completamente soddisfatti del lavoro svolto. Il giardino è diventato il nostro angolo di paradiso!',
+    '€15.000 - €20.000',
+    'medium',
+    true
+);
+
+-- Aggiunta immagini prima/durante/dopo
+INSERT INTO project_images (project_id, image_url, thumbnail_url, type, alt_text, caption, order_number) VALUES 
+((SELECT id FROM projects WHERE slug = 'giardino-villa-moderna-milano'),
+ 'https://example.com/before-1.jpg', 'https://example.com/before-1-thumb.jpg', 'before', 
+ 'Giardino prima dei lavori', 'Stato iniziale del giardino', 1),
+((SELECT id FROM projects WHERE slug = 'giardino-villa-moderna-milano'),
+ 'https://example.com/during-1.jpg', 'https://example.com/during-1-thumb.jpg', 'during', 
+ 'Lavori in corso', 'Preparazione del terreno e posa impianto irrigazione', 2),
+((SELECT id FROM projects WHERE slug = 'giardino-villa-moderna-milano'),
+ 'https://example.com/after-1.jpg', 'https://example.com/after-1-thumb.jpg', 'after', 
+ 'Giardino completato', 'Risultato finale con prato e aiuole', 3);
+    </pre>
+
+    <h2>7. Query per Gestione Contenuti</h2>
+
+    <h3>7.1 Recupero Articoli Pubblicati</h3>
+    <pre>
+-- Query per homepage - ultimi 3 articoli
+SELECT 
+    a.id,
+    a.title,
+    a.slug,
+    a.excerpt,
+    a.featured_image,
+    a.published_at,
+    c.name as category_name,
+    c.slug as category_slug,
+    u.name as author_name
+FROM articles a
+LEFT JOIN categories c ON a.category_id = c.id
+LEFT JOIN users u ON a.author_id = u.id
+WHERE a.status = 'published'
+ORDER BY a.published_at DESC
+LIMIT 3;
+
+-- Query per pagina blog con paginazione
+SELECT 
+    a.id,
+    a.title,
+    a.slug,
+    a.excerpt,
+    a.featured_image,
+    a.published_at,
+    a.view_count,
+    c.name as category_name,
+    c.color as category_color,
+    u.name as author_name
+FROM articles a
+LEFT JOIN categories c ON a.category_id = c.id
+LEFT JOIN users u ON a.author_id = u.id
+WHERE a.status = 'published'
+ORDER BY a.published_at DESC
+LIMIT 10 OFFSET 0;
+    </pre>
+
+    <h3>7.2 Recupero Progetti con Filtri</h3>
+    <pre>
+-- Query per progetti con filtro categoria
+SELECT 
+    p.id,
+    p.title,
+    p.slug,
+    p.description,
+    p.featured_image,
+    p.location,
+    p.surface_area,
+    p.completion_date,
+    c.name as category_name,
+    c.color as category_color,
+    (SELECT COUNT(*) FROM project_images pi WHERE pi.project_id = p.id) as image_count
+FROM projects p
+LEFT JOIN categories c ON p.category_id = c.id
+WHERE p.status = 'published'
+AND ($1::uuid IS NULL OR p.category_id = $1)
+ORDER BY p.completion_date DESC, p.created_at DESC;
+
+-- Query per singolo progetto con immagini
+SELECT 
+    p.*,
+    c.name as category_name,
+    c.color as category_color,
+    json_agg(
+        json_build_object(
+            'id', pi.id,
+            'image_url', pi.image_url,
+            'thumbnail_url', pi.thumbnail_url,
+            'type', pi.type,
+            'alt_text', pi.alt_text,
+            'caption', pi.caption,
+            'order_number', pi.order_number
+        ) ORDER BY pi.order_number
+    ) as images
+FROM projects p
+LEFT JOIN categories c ON p.category_id = c.id
+LEFT JOIN project_images pi ON p.id = pi.project_id
+WHERE p.slug = $1 AND p.status = 'published'
+GROUP BY p.id, c.name, c.color;
+    </pre>
+
+    <h2>8. Backup e Manutenzione</h2>
+
+    <h3>8.1 Query per Statistiche</h3>
+    <pre>
+-- Statistiche generali del sito
+SELECT 
+    (SELECT COUNT(*) FROM articles WHERE status = 'published') as published_articles,
+    (SELECT COUNT(*) FROM articles WHERE status = 'draft') as draft_articles,
+    (SELECT COUNT(*) FROM projects WHERE status = 'published') as published_projects,
+    (SELECT COUNT(*) FROM contacts WHERE status = 'new') as new_contacts,
+    (SELECT COUNT(*) FROM users WHERE is_active = true) as active_users;
+
+-- Articoli più letti
+SELECT 
+    title,
+    slug,
+    view_count,
+    published_at
+FROM articles 
+WHERE status = 'published'
+ORDER BY view_count DESC
+LIMIT 10;
+
+-- Progetti per categoria
+SELECT 
+    c.name as category,
+    COUNT(p.id) as project_count
+FROM categories c
+LEFT JOIN projects p ON c.id = p.category_id AND p.status = 'published'
+WHERE c.type = 'project'
+GROUP BY c.name
+ORDER BY project_count DESC;
+    </pre>
+
+    <h3>8.2 Query per Pulizia Database</h3>
+    <pre>
+-- Rimozione articoli bozza vecchi (più di 30 giorni)
+DELETE FROM articles 
+WHERE status = 'draft' 
+AND created_at < NOW() - INTERVAL '30 days';
+
+-- Rimozione contatti vecchi (più di 1 anno)
+DELETE FROM contacts 
+WHERE status = 'closed' 
+AND created_at < NOW() - INTERVAL '1 year';
+
+-- Aggiornamento contatori tag
+UPDATE tags SET usage_count = (
+    SELECT COUNT(*) FROM article_tags at 
+    WHERE at.tag_id = tags.id
+);
+    </pre>
+
+    <div class="note">
+      <strong>Nota Importante:</strong> Tutte le query devono essere eseguite in sequenza. Assicurarsi di avere i
+      permessi necessari su Supabase e di testare le query in un ambiente di sviluppo prima di applicarle in produzione.
+    </div>
+
+    <div class="note">
+      <strong>Configurazione Supabase:</strong> Ricordarsi di configurare le variabili d'ambiente SUPABASE_URL e
+      SUPABASE_ANON_KEY nel codice JavaScript del sito web.
+    </div>
+
+    <h2>9. Credenziali di Accesso</h2>
+
+    <p><strong>Utente Admin Predefinito:</strong></p>
+    <ul>
+      <li><strong>Email:</strong> admin@ortensiagroup.net</li>
+      <li><strong>Password:</strong> password123</li>
+    </ul>
+
+    <p class="important">IMPORTANTE: Cambiare immediatamente la password predefinita dopo il primo accesso!</p>
+
+    <p><strong>Data di creazione documento:</strong> Gennaio 2025</p>
+    <p><strong>Versione:</strong> 1.0</p>
+  </body>
+</html>
+
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDnjjqJ6lbpxCkLr5ULXTUrJ9WoV7o%2FQeVT7eXK3XnCUYFA%2FSpbMLfR9pKnF1eXuuPEbZjuWVjOHdKmeV2MjjMa6CqnKp5%2FORYOuk9M7KNVGB%2FQdOWvgq096lHFyypPbmoFHQThg85GCdFBUMatlBaRxwxHD4f8mf99oSFpPdqr8gvknim9eXEwbVhU0ioJd7BlE9NUYmH6WfnVDE28lRjOprzFUDCnPV1HU6ZFtVr38HKVIFjWWqQtN8fMJ2Yvc2wFFX3f5HesnlF91qoua1fHZopqaso5IrTTd6jLPcOdvAeEJeuacTgSWZeMFnqHdRv4x%2BM3gsnZQ6obyr0wBqYeSG9%2BKH3n8YJZ58DAaYroqIBLlRtutbbP6%2B5jO2GryYt5ys8I19%2BCA9wGI1RTtMExyzser%2B1YBeKAI%2FNDuNlJzvsYCApfLCHA%2FKOKAxUNBUnShJ5ajUSo4Vjag4KzQYPJAkkcZLpAHPkmSnIGoKY9NWat5scEneeCbRczBwF1kJzA%3D%3D";
+        window.__genspark_locale = "it-IT";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDnjjqJ6lbpxCkLr5ULXTUrJ9WoV7o/QeVT7eXK3XnCUYFA/SpbMLfR9pKnF1eXuuPEbZjuWVjOHdKmeV2MjjMa6CqnKp5/ORYOuk9M7KNVGB/QdOWvgq096lHFyypPbmoFHQThg85GCdFBUMatlBaRxwxHD4f8mf99oSFpPdqr8gvknim9eXEwbVhU0ioJd7BlE9NUYmH6WfnVDE28lRjOprzFUDCnPV1HU6ZFtVr38HKVIFjWWqQtN8fMJ2Yvc2wFFX3f5HesnlF91qoua1fHZopqaso5IrTTd6jLPcOdvAeEJeuacTgSWZeMFnqHdRv4x+M3gsnZQ6obyr0wBqYeSG9+KH3n8YJZ58DAaYroqIBLlRtutbbP6+5jO2GryYt5ys8I19+CA9wGI1RTtMExyzser+1YBeKAI/NDuNlJzvsYCApfLCHA/KOKAxUNBUnShJ5ajUSo4Vjag4KzQYPJAkkcZLpAHPkmSnIGoKY9NWat5scEneeCbRczBwF1kJzA==";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    

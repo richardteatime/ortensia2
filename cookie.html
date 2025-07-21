@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Policy - Ortensia Group</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-green: #2C5F2D;
+            --secondary-green: #4A7C59;
+            --accent-gold: #D4AF37;
+            --light-green: #E8F5E8;
+            --dark-text: #1A3A1B;
+            --white: #FFFFFF;
+            --light-gray: #F8F9FA;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: var(--white);
+        }
+
+        .navbar {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            text-decoration: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-nav a {
+            color: var(--dark-text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav a:hover {
+            color: var(--primary-green);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--primary-green);
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--secondary-green);
+            margin-bottom: 2rem;
+        }
+
+        .policy-section {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent-gold);
+        }
+
+        .policy-section h2 {
+            color: var(--primary-green);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .policy-section h3 {
+            color: var(--secondary-green);
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .cookie-type {
+            background: var(--light-green);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--accent-gold);
+        }
+
+        .cookie-type h4 {
+            color: var(--primary-green);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer {
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 3rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-section h3 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .footer-section a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-gold);
+        }
+
+        .breadcrumb {
+            background: var(--light-gray);
+            padding: 1rem 0;
+        }
+
+        .breadcrumb a {
+            color: var(--secondary-green);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary-green);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .cookie-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .cookie-table th,
+        .cookie-table td {
+            border: 1px solid var(--light-green);
+            padding: 0.75rem;
+            text-align: left;
+        }
+
+        .cookie-table th {
+            background: var(--primary-green);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .cookie-table tr:nth-child(even) {
+            background: var(--light-gray);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, var(--light-green), var(--accent-gold));
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border: 2px solid var(--accent-gold);
+        }
+
+        .contact-info {
+            background: var(--light-green);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .contact-info h4 {
+            color: var(--primary-green);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-nav {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="index.html" class="navbar-brand">
+                <i class="fas fa-leaf mr-2"></i>Ortensia Group
+            </a>
+            <div class="navbar-nav">
+                <a href="index.html">Home</a>
+                <a href="blog.html">Blog</a>
+                <a href="lavori.html">I Nostri Lavori</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="#contatti">Contatti</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container mx-auto px-4">
+            <nav class="flex" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                    <li class="inline-flex items-center">
+                        <a href="index.html" class="text-sm font-medium hover:text-primary-green">
+                            <i class="fas fa-home mr-1"></i>Home
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <i class="fas fa-chevron-right text-gray-400 mx-2"></i>
+                            <span class="text-sm font-medium text-gray-500">Cookie Policy</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="section-title">Cookie Policy</h1>
+            <p class="section-subtitle">
+                Informazioni dettagliate sull'uso dei cookie sul nostro sito web
+            </p>
+            <p class="text-sm text-gray-600">
+                Ultimo aggiornamento: Dicembre 2024
+            </p>
+        </div>
+
+        <!-- Introduzione -->
+        <div class="policy-section">
+            <h2><i class="fas fa-info-circle mr-2"></i>Introduzione</h2>
+            <p class="mb-4">
+                Questa Cookie Policy spiega cosa sono i cookie, come li utilizziamo sul sito web di Ortensia Group, 
+                quali tipi di cookie utilizziamo e come puoi gestire le tue preferenze sui cookie.
+            </p>
+            <p class="mb-4">
+                Il nostro sito web utilizza cookie per migliorare la tua esperienza di navigazione, fornire 
+                funzionalità personalizzate e analizzare il traffico del sito. Continuando a utilizzare il nostro 
+                sito, accetti l'uso dei cookie in conformità con questa policy.
+            </p>
+        </div>
+
+        <!-- Cosa sono i Cookie -->
+        <div class="policy-section">
+            <h2><i class="fas fa-cookie-bite mr-2"></i>Cosa sono i Cookie</h2>
+            <p class="mb-4">
+                I cookie sono piccoli file di testo che vengono memorizzati sul tuo dispositivo (computer, tablet, 
+                smartphone) quando visiti un sito web. Questi file contengono informazioni che possono essere 
+                lette dal sito web durante le visite successive.
+            </p>
+            <p class="mb-4">
+                I cookie ci permettono di riconoscere il tuo dispositivo e ricordare le tue preferenze, 
+                migliorando così la tua esperienza di navigazione.
+            </p>
+        </div>
+
+        <!-- Tipi di Cookie -->
+        <div class="policy-section">
+            <h2><i class="fas fa-list mr-2"></i>Tipi di Cookie che Utilizziamo</h2>
+            
+            <div class="cookie-type">
+                <h4><i class="fas fa-cog mr-2"></i>Cookie Tecnici Necessari</h4>
+                <p>
+                    Questi cookie sono essenziali per il funzionamento del sito web e non possono essere disattivati. 
+                    Sono utilizzati per la navigazione e per abilitare funzionalità di base come la sicurezza, 
+                    l'accesso alle aree riservate e altre funzioni essenziali.
+                </p>
+            </div>
+
+            <div class="cookie-type">
+                <h4><i class="fas fa-chart-line mr-2"></i>Cookie Analitici</h4>
+                <p>
+                    Utilizziamo Google Analytics per raccogliere informazioni anonime su come i visitatori 
+                    utilizzano il nostro sito. Questi dati ci aiutano a migliorare la struttura e il contenuto 
+                    del sito web.
+                </p>
+            </div>
+
+            <div class="cookie-type">
+                <h4><i class="fas fa-user-cog mr-2"></i>Cookie di Personalizzazione</h4>
+                <p>
+                    Questi cookie ricordano le tue preferenze e scelte (come la lingua, le preferenze sui cookie) 
+                    per fornirti un'esperienza più personalizzata durante le visite successive.
+                </p>
+            </div>
+
+            <div class="cookie-type">
+                <h4><i class="fas fa-share-alt mr-2"></i>Cookie di Terze Parti</h4>
+                <p>
+                    Utilizziamo servizi di terze parti come Google Analytics, Google Maps e widget dei social media 
+                    che possono impostare i propri cookie. Questi cookie sono regolati dalle rispettive policy 
+                    di privacy di tali servizi.
+                </p>
+            </div>
+        </div>
+
+        <!-- Dettaglio Cookie -->
+        <div class="policy-section">
+            <h2><i class="fas fa-table mr-2"></i>Elenco Dettagliato dei Cookie</h2>
+            
+            <div class="table-container">
+                <table class="cookie-table">
+                    <thead>
+                        <tr>
+                            <th>Nome Cookie</th>
+                            <th>Finalità</th>
+                            <th>Durata</th>
+                            <th>Tipo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>cookie_consent</td>
+                            <td>Memorizza le preferenze dell'utente sui cookie</td>
+                            <td>1 anno</td>
+                            <td>Tecnico</td>
+                        </tr>
+                        <tr>
+                            <td>_ga</td>
+                            <td>Google Analytics - Identifica gli utenti</td>
+                            <td>2 anni</td>
+                            <td>Analitico</td>
+                        </tr>
+                        <tr>
+                            <td>_gid</td>
+                            <td>Google Analytics - Identifica gli utenti</td>
+                            <td>24 ore</td>
+                            <td>Analitico</td>
+                        </tr>
+                        <tr>
+                            <td>_gat_gtag</td>
+                            <td>Google Analytics - Controllo velocità richieste</td>
+                            <td>1 minuto</td>
+                            <td>Analitico</td>
+                        </tr>
+                        <tr>
+                            <td>session_id</td>
+                            <td>Identifica la sessione dell'utente</td>
+                            <td>Sessione</td>
+                            <td>Tecnico</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Gestione Cookie -->
+        <div class="policy-section">
+            <h2><i class="fas fa-sliders-h mr-2"></i>Come Gestire i Cookie</h2>
+            
+            <div class="highlight-box">
+                <h3><i class="fas fa-hand-pointer mr-2"></i>Gestione tramite Banner</h3>
+                <p>
+                    Puoi gestire le tue preferenze sui cookie tramite il banner che appare la prima volta 
+                    che visiti il nostro sito. Puoi anche riaprire il pannello delle preferenze in qualsiasi 
+                    momento cliccando sul link "Gestisci Cookie" nel footer del sito.
+                </p>
+            </div>
+
+            <h3><i class="fas fa-browser mr-2"></i>Gestione tramite Browser</h3>
+            <p class="mb-4">
+                Puoi gestire i cookie direttamente dalle impostazioni del tuo browser. Ecco come fare 
+                per i browser più comuni:
+            </p>
+            
+            <ul class="list-disc ml-6 mb-4">
+                <li><strong>Chrome:</strong> Impostazioni → Privacy e sicurezza → Cookie e altri dati dei siti</li>
+                <li><strong>Firefox:</strong> Impostazioni → Privacy e sicurezza → Cookie e dati dei siti web</li>
+                <li><strong>Safari:</strong> Preferenze → Privacy → Gestisci dati dei siti web</li>
+                <li><strong>Edge:</strong> Impostazioni → Privacy, ricerca e servizi → Cookie e autorizzazioni sito</li>
+            </ul>
+
+            <p class="mb-4">
+                <strong>Nota:</strong> Disabilitando i cookie tecnici necessari, alcune funzionalità del sito 
+                potrebbero non funzionare correttamente.
+            </p>
+        </div>
+
+        <!-- Cookie di Terze Parti -->
+        <div class="policy-section">
+            <h2><i class="fas fa-external-link-alt mr-2"></i>Cookie di Terze Parti</h2>
+            
+            <h3>Google Analytics</h3>
+            <p class="mb-4">
+                Utilizziamo Google Analytics per analizzare l'uso del nostro sito web. Google Analytics 
+                può utilizzare i dati raccolti per contestualizzare e personalizzare gli annunci della 
+                propria rete pubblicitaria.
+            </p>
+            <p class="mb-4">
+                Per maggiori informazioni: 
+                <a href="https://policies.google.com/privacy" target="_blank" class="text-blue-600 hover:underline">
+                    Google Privacy Policy
+                </a>
+            </p>
+
+            <h3>Google Maps</h3>
+            <p class="mb-4">
+                Utilizziamo Google Maps per mostrare la nostra posizione. Google Maps può impostare 
+                cookie per il funzionamento della mappa e per scopi statistici.
+            </p>
+        </div>
+
+        <!-- Diritti dell'Utente -->
+        <div class="policy-section">
+            <h2><i class="fas fa-user-shield mr-2"></i>I Tuoi Diritti</h2>
+            <p class="mb-4">
+                In conformità con il GDPR e le normative italiane sulla privacy, hai i seguenti diritti:
+            </p>
+            
+            <ul class="list-disc ml-6 mb-4">
+                <li><strong>Diritto di accesso:</strong> Puoi richiedere informazioni sui cookie che utilizziamo</li>
+                <li><strong>Diritto di rettifica:</strong> Puoi chiedere la correzione di dati inesatti</li>
+                <li><strong>Diritto di cancellazione:</strong> Puoi richiedere la cancellazione dei tuoi dati</li>
+                <li><strong>Diritto di limitazione:</strong> Puoi richiedere la limitazione del trattamento</li>
+                <li><strong>Diritto di opposizione:</strong> Puoi opporti al trattamento dei tuoi dati</li>
+                <li><strong>Diritto alla portabilità:</strong> Puoi richiedere i tuoi dati in formato strutturato</li>
+            </ul>
+        </div>
+
+        <!-- Modifiche alla Policy -->
+        <div class="policy-section">
+            <h2><i class="fas fa-edit mr-2"></i>Modifiche a questa Policy</h2>
+            <p class="mb-4">
+                Ci riserviamo il diritto di modificare questa Cookie Policy in qualsiasi momento. 
+                Le modifiche entreranno in vigore immediatamente dopo la pubblicazione sul sito web.
+            </p>
+            <p class="mb-4">
+                Ti consigliamo di consultare regolarmente questa pagina per rimanere aggiornato 
+                su eventuali modifiche.
+            </p>
+        </div>
+
+        <!-- Contatti -->
+        <div class="policy-section">
+            <h2><i class="fas fa-envelope mr-2"></i>Contatti</h2>
+            <p class="mb-4">
+                Per qualsiasi domanda riguardante questa Cookie Policy o per esercitare i tuoi diritti, 
+                puoi contattarci utilizzando i seguenti recapiti:
+            </p>
+            
+            <div class="contact-info">
+                <h4>Ortensia Group</h4>
+                <p><i class="fas fa-map-marker-alt mr-2"></i>Via Fanfulla da Lodi 5, 20090 Trezzano sul Naviglio (MI)</p>
+                <p><i class="fas fa-phone mr-2"></i>02 43416807</p>
+                <p><i class="fas fa-mobile-alt mr-2"></i>347 6764038</p>
+                <p><i class="fas fa-envelope mr-2"></i>info@ortensiagroup.net</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="footer-section">
+                    <h3 class="text-xl font-bold mb-4">
+                        <i class="fas fa-leaf mr-2"></i>Ortensia Group
+                    </h3>
+                    <p class="text-white mb-4">
+                        Da oltre 25 anni trasformiamo i sogni in realtà, creando spazi verdi unici e sostenibili.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-2xl hover:text-accent-gold transition-colors">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="text-2xl hover:text-accent-gold transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-2xl hover:text-accent-gold transition-colors">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Servizi</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html#servizi">Progettazione Giardini</a></li>
+                        <li><a href="index.html#servizi">Impianti Irrigazione</a></li>
+                        <li><a href="index.html#servizi">Potatura</a></li>
+                        <li><a href="index.html#servizi">Disboscamento</a></li>
+                        <li><a href="index.html#servizi">Sanificazione</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Informazioni</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html#chi-siamo">Chi Siamo</a></li>
+                        <li><a href="lavori.html">I Nostri Lavori</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="cookie.html">Cookie Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contatti</h3>
+                    <div class="space-y-2">
+                        <p><i class="fas fa-phone mr-2"></i>02 43416807</p>
+                        <p><i class="fas fa-mobile-alt mr-2"></i>347 6764038</p>
+                        <p><i class="fas fa-envelope mr-2"></i>info@ortensiagroup.net</p>
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>Via Fanfulla da Lodi 5, 20090 Trezzano sul Naviglio (MI)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-secondary-green mt-8 pt-8 text-center">
+                <p>&copy; 2024 Ortensia Group. Tutti i diritti riservati.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+    <script id="html_badge_script1">
+        window.__genspark_remove_badge_link = "https://www.genspark.ai/api/html_badge/" +
+            "remove_badge?token=To%2FBnjzloZ3UfQdcSaYfDlsyw%2BmGvGioRuNYJsjdzj2AvySykUG8aIXDp6XMBWX3MJ5iLs2J24fb%2FnA3uoZ2etwGMLU%2Ff0yd6v3qlK2CzDKNV6%2BOJUZkpYAp%2FBshO0t4y16d6DjwQ6zbLtl0YQe0Ob%2FVjfw3ligsHYjtU3ouYHkLtbEUTkEktPQqKhv2SZ2uhVKY1IeRtXfwTWzYM7fZ0mO%2FxWZDivt3OpLgMdXuJ446Vl3bo93K8oOCxxt6Oerk5emquQeAuZTvbtOz6Ta7K6baZhbsn3q0YsU%2FRAAfEZJzmbL3xrzWfE9kt5Ii2gy5CU80zPwoK4edFeFUR%2FCU93mUuvBEGW258gS%2BTO5yw%2F5ODytlwu426%2B2ex2tTg88PDiSt%2FC1882WGavjmrjWxQFL5GT%2ByNesztM%2FLJmCtqawpcJDm1OsXjN%2FUxSdT74wQ87FpgYhOK2eX6w0JmrxZ5%2BucLHCVKt4Q3UxGDZB9Ey2JziPvfRPnzu7PnYTL5YhQI98Ly%2FCtyxkIdBe7MIyZFg%3D%3D";
+        window.__genspark_locale = "it-IT";
+        window.__genspark_token = "To/BnjzloZ3UfQdcSaYfDlsyw+mGvGioRuNYJsjdzj2AvySykUG8aIXDp6XMBWX3MJ5iLs2J24fb/nA3uoZ2etwGMLU/f0yd6v3qlK2CzDKNV6+OJUZkpYAp/BshO0t4y16d6DjwQ6zbLtl0YQe0Ob/Vjfw3ligsHYjtU3ouYHkLtbEUTkEktPQqKhv2SZ2uhVKY1IeRtXfwTWzYM7fZ0mO/xWZDivt3OpLgMdXuJ446Vl3bo93K8oOCxxt6Oerk5emquQeAuZTvbtOz6Ta7K6baZhbsn3q0YsU/RAAfEZJzmbL3xrzWfE9kt5Ii2gy5CU80zPwoK4edFeFUR/CU93mUuvBEGW258gS+TO5yw/5ODytlwu426+2ex2tTg88PDiSt/C1882WGavjmrjWxQFL5GT+yNesztM/LJmCtqawpcJDm1OsXjN/UxSdT74wQ87FpgYhOK2eX6w0JmrxZ5+ucLHCVKt4Q3UxGDZB9Ey2JziPvfRPnzu7PnYTL5YhQI98Ly/CtyxkIdBe7MIyZFg==";
+    </script>
+    
+    <script id="html_notice_dialog_script" src="https://www.genspark.ai/notice_dialog.js"></script>
+    
